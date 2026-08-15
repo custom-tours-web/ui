@@ -44,13 +44,27 @@ function Invoke-HamlBuild {
         }
 
         Write-Log -Level INFO -Message "📄 Found $($hamlFiles.Count) HAML file(s)."
+        Write-Log -Level INFO -Message "🔧 Compiling files from $srcDir to $outDir"
 
-        Write-Log -Level INFO -Message "🔧 Compiling $srcDir -> $outDir"
+        foreach ($file in $hamlFiles) {
+            $relativePath = $file.FullName.Substring($srcDir.Length + 1)
+            $outputFilePath = Join-Path $outDir $relativePath -Resolve:$false
+            $outputFilePath = [System.IO.Path]::ChangeExtension($outputFilePath, ".html")
 
-        $null = & haml $srcDir --out $outDir 2>&1
+            $targetDir = Split-Path $outputFilePath -Parent
+            if (-not (Test-Path $targetDir)) {
+                New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+            }
 
-        if ($LASTEXITCODE -ne 0) {
-            throw "HAML compilation failed for '$srcDir' with exit code $LASTEXITCODE."
+            Write-Log -Level INFO -Message "   Compiling $($file.Name)..."
+
+            $hamlOutput = & haml $file.FullName 2>&1
+
+            if ($LASTEXITCODE -ne 0) {
+                throw "HAML compilation failed for '$($file.FullName)' with exit code $LASTEXITCODE.`nDetails: $hamlOutput"
+            }
+
+            Set-Content -Path $outputFilePath -Value $hamlOutput -Encoding UTF8
         }
 
         Write-Log -Level SUCCESS -Message "✅ HAML build completed successfully."
