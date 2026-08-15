@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'feat/**'
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Web Assets (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 💎 Setup Ruby (Latest)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 'ruby'
+
+      - name: 🟢 Setup Node.js (Latest)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '*'
+
+      - name: 📦 Install Global CLI Dependencies
+        run: |
+          gem install haml
+          npm install -g stylus typescript
+
+      - name: 🚀 Execute Build Scripts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          . ./scripts/InvokeHamlBuild.ps1
+          . ./scripts/InvokeStylBuild.ps1
+          . ./scripts/InvokeTsBuild.ps1
+
+          Invoke-HamlBuild -StartPath .
+          Invoke-StylusBuild -StartPath .
+          Invoke-TypeScriptBuild -StartPath .
+
+      - name: 📤 Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-web-assets
+          path: dist/
+          retention-days: 1
