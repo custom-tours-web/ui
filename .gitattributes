@@ -1,0 +1,53 @@
+# ==============================================================================
+# 🚀 Global Default
+# ==============================================================================
+# Auto-detect text files and ensure they are normalized to LF (macOS/Linux standard).
+# This prevents cross-platform CRLF/LF issues if Windows users clone the repo.
+* text=auto eol=lf
+
+# ==============================================================================
+# 📦 Source Code (Web Stack)
+# ==============================================================================
+# Assign specific diff drivers so Git understands how to present changes
+*.haml text eol=lf diff=html
+*.styl text eol=lf diff=css
+*.ts   text eol=lf diff=javascript
+*.json text eol=lf
+
+# ==============================================================================
+# ⚙️ Scripts
+# ==============================================================================
+# Scripts MUST use LF to execute properly on macOS/Linux. 
+# This strictly prevents Windows git clients from altering them.
+*.ps1  text eol=lf
+*.sh   text eol=lf
+
+# ==============================================================================
+# 📝 Documentation & Configs
+# ==============================================================================
+*.md   text eol=lf
+.editorconfig text eol=lf
+.gitignore text eol=lf
+
+# ==============================================================================
+# 🖼️ Binary Assets
+# ==============================================================================
+# Treat images, fonts, and icons as binaries so Git doesn't try to diff 
+# or change their line endings, which corrupts the files.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+
+# ==============================================================================
+# 📊 GitHub Repository Stats (Linguist)
+# ==============================================================================
+# If you ever decide to track generated files (which you currently ignore), 
+# you can tell GitHub to ignore them in your repository's language statistics:
+# dist/* linguist-generated=true
