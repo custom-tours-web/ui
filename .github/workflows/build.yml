@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - 'feat/**'
       - air
   pull_request:
     branches:
@@ -21,6 +20,7 @@ jobs:
   build:
     name: Build Web Assets (Windows)
     runs-on: windows-latest
+    timeout-minutes: 15
 
     steps:
       - name: 📥 Checkout Repository
@@ -57,6 +57,7 @@ jobs:
       - name: 📤 Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: compiled-web-assets
+          name: web-assets
           path: dist/
           retention-days: 1
+          if-no-files-found: error
