@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - 'feat/**'
+      - air
   pull_request:
     branches:
       - main
