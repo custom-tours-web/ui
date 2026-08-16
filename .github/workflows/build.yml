@@ -130,10 +130,17 @@ jobs:
           path: dist/
           merge-multiple: true
 
+      - name: 🔍 Validate Final Distribution
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          . ./scripts/InvokeWebAssetsValidation.ps1
+          Invoke-WebAssetsValidation -StartPath .
+
       - name: 📤 Upload Final Bundle
         uses: actions/upload-artifact@v7
         with:
-          name: web-assets
+          name: dist
           path: dist/
           retention-days: 1
           if-no-files-found: error
