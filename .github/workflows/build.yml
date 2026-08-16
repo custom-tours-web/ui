@@ -42,6 +42,14 @@ jobs:
           . ./scripts/InvokeHamlBuild.ps1
           Invoke-HamlBuild -StartPath .
 
+      - name: 📤 Upload HAML Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: haml-assets
+          path: dist/
+          retention-days: 1
+          if-no-files-found: error
+
   build-stylus:
     name: Build Stylus
     runs-on: windows-latest
@@ -66,6 +74,14 @@ jobs:
             . ./scripts/InvokeStylBuild.ps1
           Invoke-StylusBuild -StartPath .
 
+      - name: 📤 Upload Stylus Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: stylus-assets
+          path: dist/
+          retention-days: 1
+          if-no-files-found: error
+
   build-ts:
     name: Build TypeScript
     runs-on: windows-latest
@@ -89,3 +105,35 @@ jobs:
           $ErrorActionPreference = "Stop"
           . ./scripts/InvokeTsBuild.ps1
           Invoke-TypeScriptBuild -StartPath .
+
+      - name: 📤 Upload TypeScript Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: ts-assets
+          path: dist/
+          retention-days: 1
+          if-no-files-found: error
+
+  package:
+    name: Package Web Assets
+    needs:
+      - build-haml
+      - build-stylus
+      - build-ts
+    runs-on: windows-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 📥 Download All Partial Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: dist/
+          merge-multiple: true
+
+      - name: 📤 Upload Final Bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-assets
+          path: dist/
+          retention-days: 1
+          if-no-files-found: error
