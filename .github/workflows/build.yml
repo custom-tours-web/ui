@@ -19,9 +19,10 @@ permissions:
 
 jobs:
   build-haml:
-    name: 🚀 Build HAML
+    name: Build HAML
     runs-on: windows-latest
     timeout-minutes: 5
+
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
@@ -47,11 +48,13 @@ jobs:
           name: haml-assets
           path: dist/
           retention-days: 1
+          if-no-files-found: error
 
   build-stylus:
-    name: 🚀 Build Stylus
+    name: Build Stylus
     runs-on: windows-latest
     timeout-minutes: 5
+
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
@@ -60,7 +63,7 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: '*'
-          
+
       - name: 📦 Install Stylus
         run: npm install -g stylus
 
@@ -68,7 +71,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          . ./scripts/InvokeStylBuild.ps1
+            . ./scripts/InvokeStylBuild.ps1
           Invoke-StylusBuild -StartPath .
 
       - name: 📤 Upload Stylus Artifacts
@@ -77,11 +80,13 @@ jobs:
           name: stylus-assets
           path: dist/
           retention-days: 1
+          if-no-files-found: error
 
   build-ts:
-    name: 🚀 Build TypeScript
+    name: Build TypeScript
     runs-on: windows-latest
     timeout-minutes: 5
+
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
@@ -101,17 +106,23 @@ jobs:
           . ./scripts/InvokeTsBuild.ps1
           Invoke-TypeScriptBuild -StartPath .
 
-      - name: 📤 Upload TS Artifacts
+      - name: 📤 Upload TypeScript Artifacts
         uses: actions/upload-artifact@v7
         with:
           name: ts-assets
           path: dist/
           retention-days: 1
+          if-no-files-found: error
 
   package:
-    name: 📦 Package Web Assets
-    needs: [build-haml, build-stylus, build-ts]
+    name: Package Web Assets
+    needs:
+      - build-haml
+      - build-stylus
+      - build-ts
     runs-on: windows-latest
+    timeout-minutes: 5
+
     steps:
       - name: 📥 Download All Partial Artifacts
         uses: actions/download-artifact@v8
