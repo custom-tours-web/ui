@@ -124,6 +124,9 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v7
+
       - name: 📥 Download All Partial Artifacts
         uses: actions/download-artifact@v8
         with:
