@@ -18,11 +18,10 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build Web Assets (Windows)
+  build-haml:
+    name: 🚀 Build HAML
     runs-on: windows-latest
-    timeout-minutes: 15
-
+    timeout-minutes: 5
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
@@ -32,30 +31,95 @@ jobs:
         with:
           ruby-version: 'ruby'
 
+      - name: 📦 Install HAML
+        run: gem install haml
+
+      - name: 🚀 Build HAML
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          . ./scripts/InvokeHamlBuild.ps1
+          Invoke-HamlBuild -StartPath .
+
+      - name: 📤 Upload HAML Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: haml-assets
+          path: dist/
+          retention-days: 1
+
+  build-stylus:
+    name: 🚀 Build Stylus
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: 🟢 Setup Node.js (Latest)
+        uses: actions/setup-node@v7
+        with:
+          node-version: '*'
+          
+      - name: 📦 Install Stylus
+        run: npm install -g stylus
+
+      - name: 🚀 Build Stylus
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          . ./scripts/InvokeStylBuild.ps1
+          Invoke-StylusBuild -StartPath .
+
+      - name: 📤 Upload Stylus Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: stylus-assets
+          path: dist/
+          retention-days: 1
+
+  build-ts:
+    name: 🚀 Build TypeScript
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v7
+
       - name: 🟢 Setup Node.js (Latest)
         uses: actions/setup-node@v7
         with:
           node-version: '*'
 
-      - name: 📦 Install Global CLI Dependencies
-        run: |
-          gem install haml
-          npm install -g stylus typescript
+      - name: 📦 Install TypeScript
+        run: npm install -g typescript
 
-      - name: 🚀 Execute Build Scripts
+      - name: 🚀 Build TypeScript
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-
-          . ./scripts/InvokeHamlBuild.ps1
-          . ./scripts/InvokeStylBuild.ps1
           . ./scripts/InvokeTsBuild.ps1
-
-          Invoke-HamlBuild -StartPath .
-          Invoke-StylusBuild -StartPath .
           Invoke-TypeScriptBuild -StartPath .
 
-      - name: 📤 Upload Build Artifacts
+      - name: 📤 Upload TS Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: ts-assets
+          path: dist/
+          retention-days: 1
+
+  package:
+    name: 📦 Package Web Assets
+    needs: [build-haml, build-stylus, build-ts]
+    runs-on: windows-latest
+    steps:
+      - name: 📥 Download All Partial Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: dist/
+          merge-multiple: true
+
+      - name: 📤 Upload Final Bundle
         uses: actions/upload-artifact@v7
         with:
           name: web-assets
