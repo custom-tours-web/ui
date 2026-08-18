@@ -1,5 +1,14 @@
+# ==============================================================================
+# WebAssetBuilder Continuous Integration (CI) Workflow
+# 
+# Compiles HAML, Stylus, and TypeScript assets concurrently across isolated jobs 
+# using the 'WebAssetBuilder' PowerShell module, then merges and validates 
+# the final distribution bundle.
+# ==============================================================================
+
 name: CI
 
+# Workflow Triggers
 on:
   push:
     branches:
@@ -8,40 +17,50 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: # Enables manual workflow runs from the GitHub Actions UI
 
+# Concurrency Management: Cancels redundant in-progress builds on the same branch or PR
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Security Hardening: Limits default repository access privileges for GITHUB_TOKEN
 permissions:
   contents: read
 
 jobs:
+  # ----------------------------------------------------------------------------
+  # JOB 1: Compile HAML Templates to HTML
+  # ----------------------------------------------------------------------------
   build-haml:
     name: Build HAML
     runs-on: windows-latest
     timeout-minutes: 5
 
     steps:
+      # Clone repository source files
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
 
+      # Provision Ruby runtime required for the HAML CLI tool
       - name: 💎 Setup Ruby (Latest)
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 'ruby'
 
+      # Install HAML compiler gem globally
       - name: 📦 Install HAML
         run: gem install haml
 
+      # Import WebAssetBuilder module and execute HAML build cmdlet
       - name: 🚀 Build HAML
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          . ./scripts/InvokeHamlBuild.ps1
+          Import-Module ./WebAssetBuilder/WebAssetBuilder.psd1 -Force
           Invoke-HamlBuild -StartPath .
 
+      # Store generated HTML output as a temporary workflow artifact
       - name: 📤 Upload HAML Artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -50,30 +69,38 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  # ----------------------------------------------------------------------------
+  # JOB 2: Compile Stylus Stylesheets to CSS
+  # ----------------------------------------------------------------------------
   build-stylus:
     name: Build Stylus
     runs-on: windows-latest
     timeout-minutes: 5
 
     steps:
+      # Clone repository source files
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
 
+      # Provision Node.js environment required for Stylus CLI
       - name: 🟢 Setup Node.js (Latest)
         uses: actions/setup-node@v7
         with:
           node-version: '*'
 
+      # Install Stylus compiler globally via npm
       - name: 📦 Install Stylus
         run: npm install -g stylus
 
+      # Import WebAssetBuilder module and execute Stylus build cmdlet
       - name: 🚀 Build Stylus
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-            . ./scripts/InvokeStylBuild.ps1
+          Import-Module ./WebAssetBuilder/WebAssetBuilder.psd1 -Force
           Invoke-StylusBuild -StartPath .
 
+      # Store generated CSS output as a temporary workflow artifact
       - name: 📤 Upload Stylus Artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -82,30 +109,38 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  # ----------------------------------------------------------------------------
+  # JOB 3: Compile TypeScript Scripts to JavaScript
+  # ----------------------------------------------------------------------------
   build-ts:
     name: Build TypeScript
     runs-on: windows-latest
     timeout-minutes: 5
 
     steps:
+      # Clone repository source files
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
 
+      # Provision Node.js environment required for TypeScript CLI (tsc)
       - name: 🟢 Setup Node.js (Latest)
         uses: actions/setup-node@v7
         with:
           node-version: '*'
 
+      # Install TypeScript compiler globally via npm
       - name: 📦 Install TypeScript
         run: npm install -g typescript
 
+      # Import WebAssetBuilder module and execute TypeScript build cmdlet
       - name: 🚀 Build TypeScript
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          . ./scripts/InvokeTsBuild.ps1
+          Import-Module ./WebAssetBuilder/WebAssetBuilder.psd1 -Force
           Invoke-TypeScriptBuild -StartPath .
 
+      # Store generated JavaScript output as a temporary workflow artifact
       - name: 📤 Upload TypeScript Artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -114,8 +149,12 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  # ----------------------------------------------------------------------------
+  # JOB 4: Aggregate Artifacts & Validate Final Distribution
+  # ----------------------------------------------------------------------------
   package:
     name: Package Web Assets
+    # Block execution until all 3 compilation tasks finish successfully
     needs:
       - build-haml
       - build-stylus
@@ -124,26 +163,30 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      # Clone workspace to access module and script paths
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
 
+      # Fetch and combine partial artifacts (haml, styl, ts) into dist/
       - name: 📥 Download All Partial Artifacts
         uses: actions/download-artifact@v8
         with:
           path: dist/
           merge-multiple: true
 
+      # Execute validation cmdlet to verify required HTML, CSS, and JS files exist
       - name: 🔍 Validate Final Distribution
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          . ./scripts/InvokeWebAssetsValidation.ps1
+          Import-Module ./WebAssetBuilder/WebAssetBuilder.psd1 -Force
           Invoke-WebAssetsValidation -StartPath .
 
+      # Upload completed distribution bundle for release deployment or inspection
       - name: 📤 Upload Final Bundle
         uses: actions/upload-artifact@v7
         with:
-          name: assest
+          name: assets
           path: dist/
           retention-days: 1
           if-no-files-found: error
