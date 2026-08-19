@@ -1,5 +1,6 @@
-$ErrorActionPreference = 'Stop'
+Import-Module Pester
 
+$ErrorActionPreference = 'Stop'
 $manifestPath = "$PSScriptRoot/WebAssetBuilder.psd1"
 
 # Load your module into memory so tests can access the functions
