@@ -26,7 +26,7 @@ Describe 'Invoke-WebAssetsValidation Integration Tests' {
         Mock Find-ProjectRoot { return $null } -ModuleName "WebAssetBuilder"
 
         { Invoke-WebAssetsValidation -StartPath $script:tempRoot } | 
-            Should -Throw 'Project root could not be determined.'
+            Should-Throw 'Project root could not be determined.'
     }
 
     # ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ Describe 'Invoke-WebAssetsValidation Integration Tests' {
         # We purposely do not create a 'dist' folder here
         
         { Invoke-WebAssetsValidation -StartPath $script:tempRoot } | 
-            Should -Throw "Final dist directory was not created:*"
+            Should-Throw "Final dist directory was not created:*"
     }
 
     # ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ Describe 'Invoke-WebAssetsValidation Integration Tests' {
         New-Item -ItemType File -Path (Join-Path $distPath "app.js") -Force | Out-Null
 
         { Invoke-WebAssetsValidation -StartPath $script:tempRoot } | 
-            Should -Throw 'No HTML files found in final dist.'
+            Should-Throw 'No HTML files found in final dist.'
     }
 
     # ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ Describe 'Invoke-WebAssetsValidation Integration Tests' {
         New-Item -ItemType File -Path (Join-Path $distPath "app.js") -Force | Out-Null
 
         { Invoke-WebAssetsValidation -StartPath $script:tempRoot } | 
-            Should -Throw 'No CSS files found in final dist.'
+            Should-Throw 'No CSS files found in final dist.'
     }
 
     # ----------------------------------------------------------------------
@@ -81,7 +81,7 @@ Describe 'Invoke-WebAssetsValidation Integration Tests' {
         New-Item -ItemType File -Path (Join-Path $distPath "style.css") -Force | Out-Null
 
         { Invoke-WebAssetsValidation -StartPath $script:tempRoot } | 
-            Should -Throw 'No JavaScript files found in final dist.'
+            Should-Throw 'No JavaScript files found in final dist.'
     }
 
     # ----------------------------------------------------------------------
@@ -96,7 +96,6 @@ Describe 'Invoke-WebAssetsValidation Integration Tests' {
         New-Item -ItemType File -Path (Join-Path $distPath "style.css") -Force | Out-Null
         New-Item -ItemType File -Path (Join-Path $distPath "app.js") -Force | Out-Null
 
-        { Invoke-WebAssetsValidation -StartPath $script:tempRoot } | 
-            Should -Not -Throw
+        Invoke-WebAssetsValidation -StartPath $script:tempRoot
     }
 }
