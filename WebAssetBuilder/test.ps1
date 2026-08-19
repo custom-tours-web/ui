@@ -16,11 +16,5 @@ $config = [PesterConfiguration]$pesterSettings
 # Inject dynamic runtime variables that aren't allowed in .psd1 files
 $config.CodeCoverage.ReportRoot = $PSScriptRoot
 
-# Explicitly create the output directory before invoking Pester
-$testResultsDir = Join-Path $PSScriptRoot "TestResults"
-if (-not (Test-Path $testResultsDir)) {
-    New-Item -ItemType Directory -Path $testResultsDir -Force | Out-Null
-}
-
 # Run the tests!
 Invoke-Pester -Configuration $config

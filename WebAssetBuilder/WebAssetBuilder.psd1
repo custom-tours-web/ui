@@ -155,7 +155,7 @@ PrivateData = @{
         TestResult = @{
             Enabled = $true
             OutputFormat = 'NUnitXml'   # Standard format required by most CI tools
-            OutputPath = './TestResults/'
+            OutputPath = './TestResults/result.xml'
         }
         CodeCoverage = @{
             Enabled = $true
