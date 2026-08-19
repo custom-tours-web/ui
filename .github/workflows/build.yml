@@ -60,7 +60,7 @@ jobs:
         with:
           name: test-results
           path: |
-            **/TestResults/testResults.xml
+            **/TestResults/result.xml
             **/TestResults/coverage.xml
           retention-days: 1
           if-no-files-found: error
