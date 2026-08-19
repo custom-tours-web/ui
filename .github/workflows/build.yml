@@ -70,6 +70,7 @@ jobs:
   # ----------------------------------------------------------------------------
   build-haml:
     name: Build HAML
+    needs: test
     runs-on: windows-latest
     timeout-minutes: 5
 
@@ -110,6 +111,7 @@ jobs:
   # ----------------------------------------------------------------------------
   build-stylus:
     name: Build Stylus
+    needs: test
     runs-on: windows-latest
     timeout-minutes: 5
 
@@ -150,6 +152,7 @@ jobs:
   # ----------------------------------------------------------------------------
   build-ts:
     name: Build TypeScript
+    needs: test
     runs-on: windows-latest
     timeout-minutes: 5
 
