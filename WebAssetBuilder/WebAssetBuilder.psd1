@@ -160,7 +160,7 @@ PrivateData = @{
         CodeCoverage = @{
             Enabled = $true
             Path = './public/Invoke-WebAssetsValidation.ps1' # Restricts coverage scan to module code, ignoring tests
-            OutputPath = './TestResults/'
+            OutputPath = './TestResults/coverage.xml'
         }
         Should = @{
             ErrorAction = 'Continue'
