@@ -130,6 +130,44 @@ PrivateData = @{
 
     } # End of PSData hashtable
 
+    # Embedded Pester Configuration
+    Pester = @{
+        Run = @{
+            Path = './Tests/Integration/Invoke-WebAssetsValidation.Tests.ps1'
+            Throw = $true
+            Exit = $true
+            PassThru = $true
+        }
+        Debug = @{
+            WriteDebugMessages = $true
+            ShowNavigationMarkers = $true
+            ShowStartMarkers = $true
+            ReturnRawResultObject = $true
+        }
+        Output = @{
+            ShowTags = $true
+            StackTraceVerbosity = 'Full'
+            Verbosity = 'Diagnostic'
+            CILogLevel = 'Warning'
+            CIFormat = 'GithubActions'  # Enables native GitHub Actions PR annotations
+            RenderMode = 'ConsoleColor'
+        }
+        TestResult = @{
+            Enabled = $true
+            OutputFormat = 'NUnitXml'   # Standard format required by most CI tools
+            OutputPath = './TestResults/'
+        }
+        CodeCoverage = @{
+            Enabled = $true
+            Path = './public/Invoke-WebAssetsValidation.ps1' # Restricts coverage scan to module code, ignoring tests
+            OutputPath = './TestResults/'
+        }
+        Should = @{
+            ErrorAction = 'Continue'
+            DisableV5 = $true           # Enforces legacy Pester 4 assertion syntax
+        }
+    } # End of Pester hashtable
+
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
