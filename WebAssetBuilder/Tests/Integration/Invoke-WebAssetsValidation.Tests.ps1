@@ -85,7 +85,7 @@ Describe 'Invoke-WebAssetsValidation Integration Tests' {
     }
 
     # ----------------------------------------------------------------------
-    # SCENARIO 6: The Happy Path (Success)
+    # SCENARIO 6: The Happy Path
     # ----------------------------------------------------------------------
     It 'Should execute successfully when all asset types are present' {
         $distPath = Join-Path $script:tempRoot "dist"

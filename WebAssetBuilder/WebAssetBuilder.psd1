@@ -133,7 +133,7 @@ PrivateData = @{
     # Embedded Pester Configuration
     Pester = @{
         Run = @{
-            Path = './Tests/Integration/Invoke-WebAssetsValidation.Tests.ps1'
+            Path = './Tests/'
             Throw = $true
             Exit = $true
             PassThru = $true
@@ -159,7 +159,7 @@ PrivateData = @{
         }
         CodeCoverage = @{
             Enabled = $true
-            Path = './public/Invoke-WebAssetsValidation.ps1' # Restricts coverage scan to module code, ignoring tests
+            Path = @('private', 'public') # Restricts coverage scan to module code, ignoring tests
             OutputPath = './TestResults/coverage.xml'
         }
         Should = @{

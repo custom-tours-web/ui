@@ -5,32 +5,38 @@ BeforeAll {
 Describe 'Invoke-WebAssetsValidation Unit Tests' {
 
     BeforeEach {
-        # Mock Write-Log globally to keep the test console clean[cite: 16]
-        Mock Write-Log {}
+        # Mock Write-Log globally within the module to keep the test console clean
+        Mock Write-Log {} -ModuleName 'WebAssetBuilder'
+        
+        # Define our fake project paths inside Pester's automatic TestDrive
+        $fakeProject = Join-Path $TestDrive "FakeProject"
+        $fakeDist = Join-Path $fakeProject "dist"
+    }
+
+    AfterEach {
+        # Wipe the TestDrive clean between EVERY 'It' block to prevent file leakage
+        Get-ChildItem -Path $TestDrive -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
     }
 
     # ----------------------------------------------------------------------
     # SCENARIO 1: Find-ProjectRoot Fails
     # ----------------------------------------------------------------------
     It 'Should throw an error if the project root cannot be determined' {
-        # Simulate Find-ProjectRoot failing to locate the root[cite: 16]
-        Mock Find-ProjectRoot { return $null }
+        Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-WebAssetsValidation -StartPath "C:\FakePath" } | 
-            Should -Throw 'Project root could not be determined.'
+        { Invoke-WebAssetsValidation -StartPath $TestDrive } | 
+            Should-Throw 'Project root could not be determined.'
     }
 
     # ----------------------------------------------------------------------
     # SCENARIO 2: Dist Directory is Missing
     # ----------------------------------------------------------------------
     It 'Should throw an error if the dist directory does not exist' {
-        Mock Find-ProjectRoot { return "C:\FakeProject" }
+        Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
         
-        # Simulate the 'dist' directory missing from the file system[cite: 16]
-        Mock Test-Path { return $false }
-
-        { Invoke-WebAssetsValidation -StartPath "C:\FakePath" } | 
-            Should -Throw 'Final dist directory was not created: C:\FakeProject\dist'
+        # We DO NOT create the 'dist' directory here, so Test-Path naturally fails
+        { Invoke-WebAssetsValidation -StartPath $TestDrive } | 
+            Should-Throw "Final dist directory was not created: $fakeDist"
     }
 
     # ----------------------------------------------------------------------
@@ -39,39 +45,37 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
     Context 'When the dist directory exists but lacks specific files' {
         
         BeforeEach {
-            Mock Find-ProjectRoot { return "C:\FakeProject" }
-            Mock Test-Path { return $true }
+            Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
             
-            # Setup dummy objects with a FullName property to satisfy the final logging loop[cite: 16]
-            $script:fakeFile = [PSCustomObject]@{ FullName = "C:\FakeProject\dist\fake.file" }
+            # Physically create the dist directory in the TestDrive
+            New-Item -ItemType Directory -Path $fakeDist -Force | Out-Null
         }
 
         It 'Should throw an error if no HTML files are found' {
-            # Return empty for HTML, but return fake files for CSS and JS[cite: 16]
-            Mock Get-ChildItem { return @() } -ParameterFilter { $Filter -eq '*.html' }
-            Mock Get-ChildItem { return @($script:fakeFile) } -ParameterFilter { $Filter -eq '*.css' }
-            Mock Get-ChildItem { return @($script:fakeFile) } -ParameterFilter { $Filter -eq '*.js' }
+            # Create CSS and JS, but skip HTML
+            New-Item -ItemType File -Path (Join-Path $fakeDist "style.css") -Force | Out-Null
+            New-Item -ItemType File -Path (Join-Path $fakeDist "app.js") -Force | Out-Null
 
-            { Invoke-WebAssetsValidation -StartPath "C:\FakePath" } | 
-                Should -Throw 'No HTML files found in final dist.'
+            { Invoke-WebAssetsValidation -StartPath $TestDrive } | 
+                Should-Throw 'No HTML files found in final dist.'
         }
 
         It 'Should throw an error if no CSS files are found' {
-            Mock Get-ChildItem { return @($script:fakeFile) } -ParameterFilter { $Filter -eq '*.html' }
-            Mock Get-ChildItem { return @() } -ParameterFilter { $Filter -eq '*.css' }
-            Mock Get-ChildItem { return @($script:fakeFile) } -ParameterFilter { $Filter -eq '*.js' }
+            # Create HTML and JS, but skip CSS
+            New-Item -ItemType File -Path (Join-Path $fakeDist "index.html") -Force | Out-Null
+            New-Item -ItemType File -Path (Join-Path $fakeDist "app.js") -Force | Out-Null
 
-            { Invoke-WebAssetsValidation -StartPath "C:\FakePath" } | 
-                Should -Throw 'No CSS files found in final dist.'
+            { Invoke-WebAssetsValidation -StartPath $TestDrive } | 
+                Should-Throw 'No CSS files found in final dist.'
         }
 
         It 'Should throw an error if no JS files are found' {
-            Mock Get-ChildItem { return @($script:fakeFile) } -ParameterFilter { $Filter -eq '*.html' }
-            Mock Get-ChildItem { return @($script:fakeFile) } -ParameterFilter { $Filter -eq '*.css' }
-            Mock Get-ChildItem { return @() } -ParameterFilter { $Filter -eq '*.js' }
+            # Create HTML and CSS, but skip JS
+            New-Item -ItemType File -Path (Join-Path $fakeDist "index.html") -Force | Out-Null
+            New-Item -ItemType File -Path (Join-Path $fakeDist "style.css") -Force | Out-Null
 
-            { Invoke-WebAssetsValidation -StartPath "C:\FakePath" } | 
-                Should -Throw 'No JavaScript files found in final dist.'
+            { Invoke-WebAssetsValidation -StartPath $TestDrive } | 
+                Should-Throw 'No JavaScript files found in final dist.'
         }
     }
 
@@ -79,23 +83,15 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
     # SCENARIO 4: The Happy Path
     # ----------------------------------------------------------------------
     It 'Should execute successfully without throwing when all files are present' {
-        Mock Find-ProjectRoot { return "C:\FakeProject" }
-        Mock Test-Path { return $true }
+        Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
         
-        # Create dummy objects to satisfy the .Count checks and .FullName logging[cite: 16]
-        $dummyHtml = [PSCustomObject]@{ FullName = "C:\FakeProject\dist\index.html" }
-        $dummyCss  = [PSCustomObject]@{ FullName = "C:\FakeProject\dist\style.css" }
-        $dummyJs   = [PSCustomObject]@{ FullName = "C:\FakeProject\dist\app.js" }
+        # Physically create the dist directory and ALL required files
+        New-Item -ItemType Directory -Path $fakeDist -Force | Out-Null
+        New-Item -ItemType File -Path (Join-Path $fakeDist "index.html") -Force | Out-Null
+        New-Item -ItemType File -Path (Join-Path $fakeDist "style.css") -Force | Out-Null
+        New-Item -ItemType File -Path (Join-Path $fakeDist "app.js") -Force | Out-Null
 
-        # Mock the specific filtered calls[cite: 16]
-        Mock Get-ChildItem { return @($dummyHtml) } -ParameterFilter { $Filter -eq '*.html' }
-        Mock Get-ChildItem { return @($dummyCss) } -ParameterFilter { $Filter -eq '*.css' }
-        Mock Get-ChildItem { return @($dummyJs) } -ParameterFilter { $Filter -eq '*.js' }
-        
-        # Mock the final unfiltered call used for logging all paths[cite: 16]
-        Mock Get-ChildItem { return @($dummyHtml, $dummyCss, $dummyJs) } -ParameterFilter { $null -eq $Filter }
-
-        # The function should complete without throwing any exceptions[cite: 16]
-        { Invoke-WebAssetsValidation -StartPath "C:\FakePath" } | Should -Not -Throw
+        # The function should complete without throwing any exceptions
+        Invoke-WebAssetsValidation -StartPath $TestDrive
     }
 }
