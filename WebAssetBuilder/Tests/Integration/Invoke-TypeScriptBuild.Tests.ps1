@@ -1,5 +1,11 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
+
+    function tsc {}
+    
+    InModuleScope 'WebAssetBuilder' {
+        function tsc {}
+    }
 }
 
 Describe 'Invoke-TypeScriptBuild Integration Tests' {

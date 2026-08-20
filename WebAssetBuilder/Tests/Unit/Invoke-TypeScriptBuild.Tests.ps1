@@ -1,9 +1,11 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
 
-    # Define a dummy 'tsc' function so Pester can reliably mock it 
-    # even if Node/TypeScript is not installed on the CI runner
-    function tsc {}
+    function tsc {} 
+
+    InModuleScope 'WebAssetBuilder' {
+        function tsc {}
+    }
 }
 
 Describe 'Invoke-TypeScriptBuild Unit Tests' {

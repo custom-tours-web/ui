@@ -1,8 +1,11 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
 
-    # Define a dummy 'stylus' function so Pester can reliably mock it
-    function stylus {}
+    function stylus {} 
+
+    InModuleScope 'WebAssetBuilder' {
+        function stylus {}
+    }
 }
 
 Describe 'Invoke-StylusBuild Unit Tests' {

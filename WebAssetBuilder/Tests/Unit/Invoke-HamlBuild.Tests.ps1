@@ -1,8 +1,11 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
 
-    # Define a dummy 'haml' function so Pester can reliably mock it
-    function haml {}
+    function haml {} 
+
+    InModuleScope 'WebAssetBuilder' {
+        function haml {}
+    }
 }
 
 Describe 'Invoke-HamlBuild Unit Tests' {

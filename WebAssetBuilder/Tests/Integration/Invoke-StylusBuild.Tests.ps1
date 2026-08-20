@@ -1,5 +1,11 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
+
+    function stylus {}
+
+    InModuleScope 'WebAssetBuilder' {
+        function stylus {}
+    }
 }
 
 Describe 'Invoke-StylusBuild Integration Tests' {
