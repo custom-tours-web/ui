@@ -1,11 +1,6 @@
 BeforeAll {
+    function global:tsc { $global:LASTEXITCODE = 0 }
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
-
-    function tsc {} 
-
-    InModuleScope 'WebAssetBuilder' {
-        function tsc {}
-    }
 }
 
 Describe 'Invoke-TypeScriptBuild Unit Tests' {

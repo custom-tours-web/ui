@@ -1,11 +1,6 @@
 BeforeAll {
+    function global:stylus { $global:LASTEXITCODE = 0 }
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
-
-    function stylus {} 
-
-    InModuleScope 'WebAssetBuilder' {
-        function stylus {}
-    }
 }
 
 Describe 'Invoke-StylusBuild Unit Tests' {

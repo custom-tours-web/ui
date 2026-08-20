@@ -1,11 +1,6 @@
 BeforeAll {
+    function global:haml { $global:LASTEXITCODE = 0 }
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
-
-    function haml {}
-
-    InModuleScope 'WebAssetBuilder' {
-        function haml {}
-    }
 }
 
 Describe 'Invoke-HamlBuild Integration Tests' {
