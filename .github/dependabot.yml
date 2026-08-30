@@ -1,0 +1,55 @@
+# 🤖 Dependabot Configuration
+# 📦 Automatically checks for dependency updates and creates pull requests.
+#
+# 📚 Documentation:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+
+updates:
+
+  # 📦 UI / Frontend Dependencies (npm, yarn, pnpm)
+  - package-ecosystem: "npm"
+    directory: "/"
+
+    # 🗓️ Check for updates every Monday
+    schedule:
+      interval: "weekly"
+      day: "monday"
+
+    # 🏷️ PR Labels
+    labels:
+      - "chore"
+      - "dependencies"
+
+    # 📦 Group all npm dependencies into a single PR
+    groups:
+      ui-dependencies:
+        patterns:
+          - "*"
+
+    # 📝 Commit Message Convention
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+
+  # ⚙️ GitHub Actions Dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+
+    # 🗓️ Check for updates every Monday
+    schedule:
+      interval: "weekly"
+      day: "monday"
+
+    # 🏷️ PR Labels
+    labels:
+      - "chore"
+      - "dependencies"
+
+    # 📝 Commit Message Convention
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
