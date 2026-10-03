@@ -18,6 +18,10 @@
     Relative path from the project root to the destination directory for compiled HTML files.
     Defaults to 'dist'.
 
+.PARAMETER AssetsSubDir
+    Relative path from the project root to static assets copied into the output directory.
+    Defaults to 'src/assets'.
+
 .EXAMPLE
     Invoke-HamlBuild -StartPath "C:\Projects\MyWebApp".
 
@@ -36,7 +40,10 @@ function Invoke-HamlBuild {
         [string]$SourceSubDir = "src/haml",
 
         # Relative path to the target HTML output directory.
-        [string]$OutputSubDir = "dist"
+        [string]$OutputSubDir = "dist",
+
+        # Relative path to static assets copied alongside the compiled HTML.
+        [string]$AssetsSubDir = "src/assets"
     )
 
     try {
@@ -68,6 +75,13 @@ function Invoke-HamlBuild {
         if (-not (Test-Path $outDir -PathType Container)) {
             Write-Log -Level INFO -Message "🔧 Creating output directory: $outDir"
             New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+        }
+
+        # Copy static assets when the configured source directory exists.
+        $assetsDir = Join-Path $rootDir $AssetsSubDir
+        if (Test-Path $assetsDir -PathType Container) {
+            Write-Log -Level INFO -Message "🖼️ Copying static assets from $assetsDir"
+            Copy-Item -Path $assetsDir -Destination $outDir -Recurse -Force
         }
 
         # Retrieve all .haml files recursively from the source directory.

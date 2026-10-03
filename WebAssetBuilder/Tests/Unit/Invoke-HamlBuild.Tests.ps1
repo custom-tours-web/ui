@@ -46,7 +46,7 @@ Describe 'Invoke-HamlBuild Unit Tests' {
     It 'Should throw an error if the source directory is empty' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "haml" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
-        Mock Test-Path { return $true } -ModuleName 'WebAssetBuilder'
+        Mock Test-Path { return ($Path -notmatch '[\\/]assets$') } -ModuleName 'WebAssetBuilder'
         
         # Simulate finding zero .haml files in the directory
         Mock Get-ChildItem { return @() } -ModuleName 'WebAssetBuilder'
@@ -64,7 +64,8 @@ Describe 'Invoke-HamlBuild Unit Tests' {
         Mock Test-Path { return $true } -ModuleName 'WebAssetBuilder'
         Mock New-Item {} -ModuleName 'WebAssetBuilder'
         Mock Set-Content {} -ModuleName 'WebAssetBuilder' # Ensure file system remains untouched
-        
+        Mock Copy-Item {} -ModuleName 'WebAssetBuilder' # Static assets are covered by integration tests
+
         $fakeFile = [PSCustomObject]@{ 
             FullName = (Join-Path $fakeSrcDir "index.haml")
             Name = "index.haml" 

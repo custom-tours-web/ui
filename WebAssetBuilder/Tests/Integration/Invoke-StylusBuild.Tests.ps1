@@ -1,5 +1,4 @@
 BeforeAll {
-    function global:stylus { $global:LASTEXITCODE = 0 }
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
 }
 

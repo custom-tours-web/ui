@@ -1,0 +1,29 @@
+name: 📝 Update Changelog
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-changelog:
+    name: 📝 Update CHANGELOG.md
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛒 Checkout Code
+        uses: actions/checkout@v7
+        with:
+          # 📚 Required to fetch all history for the changelog generator
+          fetch-depth: 0
+
+      - name: 🔄 Generate Changelog
+        uses: TriPSs/conventional-changelog-action@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          output-file: "CHANGELOG.md"
+
+          # 💾 Commit the updated changelog directly to main
+          skip-commit: false
+          git-message: "chore: update changelog [skip ci]"

@@ -1,0 +1,200 @@
+- navigation = [["Home", "#home"], ["Packages", "#packages"], ["Fleet", "#fleet"], ["Destinations", "#destinations"], ["Contact", "#contact"]]
+- packages = [{ title: "South India 4-Day Tour", image: "assets/tour-coast.jpg", alt: "Temple beside the water at sunset", sedan: "₹18,600", suv: "₹22,800" }, { title: "Ooty 3 Days Tour", image: "assets/tour-hills.jpg", alt: "Rolling green hills in the Western Ghats", sedan: "₹13,800", suv: "₹16,500" }, { title: "Munnar Tea Gardens Tour", image: "assets/tour-tea.jpg", alt: "Lush green tea gardens in the Western Ghats", sedan: "₹10,700", suv: "₹11,900" }]
+- vehicles = [{ name: "Sedan", seats: "4+1", image: "assets/fleet-sedan.jpg", alt: "White sedan available for rental" }, { name: "SUV", seats: "6+1", image: "assets/fleet-suv.jpg", alt: "White SUV available for rental" }, { name: "Tempo", seats: "12+1", image: "assets/fleet-tempo.jpg", alt: "Passenger van available for rental" }, { name: "Urbania", seats: "17+1", image: "assets/fleet-urbania.jpg", alt: "Premium minibus available for rental" }, { name: "Hatchback", seats: "4+1", image: "assets/fleet-hatchback.svg", alt: "Illustration of a compact hatchback car" }, { name: "Premium SUV", seats: "6+1", image: "assets/fleet-premium-suv.svg", alt: "Illustration of a premium sport utility vehicle" }, { name: "Mini Coach", seats: "20+1", image: "assets/fleet-coach.svg", alt: "Illustration of a large passenger mini coach" }]
+- destinations = [{ name: "Chennai", image: "assets/place-chennai.jpg", alt: "Historic temple in Chennai" }, { name: "Pondicherry", image: "assets/place-pondicherry.jpg", alt: "Colonial-era waterfront architecture in Pondicherry" }, { name: "Madurai", image: "assets/place-madurai.jpg", alt: "Temple tower in Madurai" }, { name: "Kanyakumari", image: "assets/place-kanyakumari.jpg", alt: "Statue on the coast at Kanyakumari" }, { name: "Ooty", image: "assets/tour-hills.jpg", alt: "Green hills in the Nilgiri mountains near Ooty" }]
+!!!
+%html{ lang: "en" }
+  %head
+    %meta{ charset: "utf-8" }
+    %meta{ name: "viewport", content: "width=device-width, initial-scale=1" }
+    %meta{ name: "theme-color", content: "#050c11" }
+    %meta{ name: "description", content: "Explore South India with custom tours, trusted local drivers, and a premium fleet." }
+    %title South India Travel | Explore with Comfort &amp; Trust
+    %link{ rel: "preconnect", href: "https://fonts.googleapis.com" }
+    %link{ rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true }
+    %link{ href: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap", rel: "stylesheet" }
+    %link{ rel: "stylesheet", href: "css/index.css" }
+  %body
+    %header.site-header
+      .header-inner
+        %a.brand{ href: "#home", "aria-label": "South India Travel home" }
+          %span.brand-mark{ "aria-hidden": "true" } ◈
+          %span.brand-copy
+            %strong South India
+            %small Travel Beyond Ordinary
+        %nav.main-nav{ "aria-label": "Main navigation" }
+          - navigation.each do |item|
+            %a{ href: item[1], class: item[0] == "Home" ? "is-active" : nil }= item[0]
+        .header-contact
+          %a.phone-link{ href: "tel:+919876543210" }
+            %span.phone-icon{ "aria-hidden": "true" } ☎
+            %span +91 98765 43210
+        %details.mobile-menu
+          %summary.menu-toggle{ "aria-label": "Open navigation menu" }
+            %span
+            %span
+            %span
+          .mobile-menu-panel
+            - navigation.each do |item|
+              %a{ href: item[1] }= item[0]
+
+    %main
+      %section.hero#home
+        .hero-image{ role: "img", "aria-label": "A South Indian temple at sunset" }
+        .hero-shade
+        .hero-content.page-width
+          %p.eyebrow Locally rooted. Thoughtfully planned.
+          %h1
+            Explore South India with
+            %span Comfort &amp; Trust
+          %p.hero-proof
+            %span 11+ Years Experience
+            %i
+            %span 100% Safe Travel
+            %i
+            %span Own Premium Fleet
+          .hero-actions
+            %a.button.button-primary{ href: "#packages" }
+              %span{ "aria-hidden": "true" } ▣
+              View Tour Packages
+            %a.button.button-outline{ href: "#booking" }
+              %span{ "aria-hidden": "true" } ▱
+              Book Custom Cab
+
+      %section.trust-strip.page-width{ "aria-label": "Why travel with us" }
+        - trust_points = [{ value: "11+", label: "Years Experience", icon: "◇" }, { value: "2000+", label: "Happy Guests", icon: "♟" }, { value: "40+", label: "Destinations", icon: "⌖" }, { value: "Verified", label: "Own Fleet", icon: "▰" }]
+        - trust_points.each do |point|
+          .trust-item
+            %span.trust-icon{ "aria-hidden": "true" }= point[:icon]
+            .trust-copy
+              %strong= point[:value]
+              %span= point[:label]
+
+      .page-content.page-width
+        %section.content-section#packages
+          .section-heading
+            %h2 Handcrafted Travel Experiences
+            %span.heading-rule
+          .tour-grid
+            - packages.each do |package|
+              %article.tour-card
+                %img.card-image{ src: package[:image], alt: package[:alt], loading: "lazy" }
+                .tour-card-body
+                  %h3= package[:title]
+                  .price-row
+                    %span.car-symbol{ "aria-hidden": "true" } ▱
+                    %span Sedan (4+1):
+                    %strong= "#{package[:sedan]} PP"
+                  .price-row
+                    %span.car-symbol{ "aria-hidden": "true" } ▱
+                    %span SUV (7+1):
+                    %strong= "#{package[:suv]} PP"
+                  %a.inclusions-link{ href: "#booking" } View Inclusions / Exclusions
+                  %a.button.button-small.button-outline{ href: "#booking" } Book This Package
+
+        %section.content-section#destinations
+          .section-heading
+            %h2 India's Most Loved Places
+            %span.heading-rule
+          .destination-grid
+            - destinations.each do |destination|
+              %a.destination-card{ href: "#booking", "aria-label": "Plan a trip to #{destination[:name]}" }
+                %img{ src: destination[:image], alt: destination[:alt], loading: "lazy" }
+                %span= destination[:name]
+
+        %section.content-section#fleet
+          .section-heading
+            %h2 Rent A Car For Your Journey
+            %span.heading-rule
+          .fleet-grid
+            - vehicles.each do |vehicle|
+              %article.fleet-card
+                %img{ src: vehicle[:image], alt: vehicle[:alt], loading: "lazy" }
+                %h3= "#{vehicle[:name]} (#{vehicle[:seats]})"
+                %a.button.button-small.button-outline{ href: "#booking" } Rent Now
+
+        %section.booking-panel#booking
+          .booking-intro
+            %h2 Ready to Explore?
+            %p Fill out the form and our travel expert will call you within 2 hours.
+            %p We guarantee the best price and completely hassle free travel.
+          %form.booking-form{ action: "#", method: "post" }
+            .form-field.field-name
+              %label.visually-hidden{ for: "full-name" } Full name
+              %span.field-icon{ "aria-hidden": "true" } ♙
+              %input#full-name{ name: "name", type: "text", placeholder: "Full Name *", autocomplete: "name", required: true }
+            .form-field.field-phone
+              %label.visually-hidden{ for: "phone-number" } Phone number
+              %span.field-icon{ "aria-hidden": "true" } ☎
+              %input#phone-number{ name: "phone", type: "tel", placeholder: "Phone Number *", autocomplete: "tel", required: true }
+            .form-field.field-location
+              %label.visually-hidden{ for: "location" } Current location
+              %span.field-icon{ "aria-hidden": "true" } ⌖
+              %input#location{ name: "location", type: "text", placeholder: "Current Location", autocomplete: "address-level2" }
+            .form-field.field-destination
+              %label.visually-hidden{ for: "destination" } Select destination
+              %select#destination{ name: "destination", required: true }
+                %option{ value: "", selected: true, disabled: true } Select Destination
+                - destinations.each do |destination|
+                  %option{ value: destination[:name].downcase }= destination[:name]
+              %span.select-icon{ "aria-hidden": "true" }⌄
+            .form-field.field-travelers
+              %label.visually-hidden{ for: "travelers" } Number of people travelling
+              %span.field-icon{ "aria-hidden": "true" } ♟
+              %input#travelers{ name: "travelers", type: "number", min: "1", placeholder: "No. of People Travelling *", required: true }
+            .form-field.date-field.field-from-date
+              %label.date-label{ for: "from-date" } From Date
+              %input#from-date{ name: "from_date", type: "date", required: true }
+            .form-field.date-field.field-to-date
+              %label.date-label{ for: "to-date" } To Date
+              %input#to-date{ name: "to_date", type: "date", required: true }
+            .form-field.field-special-requests
+              %label.visually-hidden{ for: "special-requests" } Special requests (optional)
+              %textarea#special-requests{ name: "special_requests", placeholder: "Special Requests (Optional)", rows: "3" }
+            %button.button.button-primary.submit-button{ type: "submit" }
+              %span{ "aria-hidden": "true" } ➤
+              Send Booking Request
+          %p.booking-status{ role: "status", "aria-live": "polite" }
+
+        %aside.testimonial
+          %span.quote-mark{ "aria-hidden": "true" } “
+          .testimonial-copy
+            %p 11 years of experience handling 2000+ guests nationwide.
+            %p We make travel affordable, memorable, and completely hassle free.
+          .rating{ "aria-label": "Rated five out of five stars" }
+            - 5.times do |index|
+              %span.rating-star{ "aria-hidden": "true" } ★
+
+    %footer.site-footer#contact
+      .footer-main.page-width
+        .footer-about
+          %a.brand{ href: "#home", "aria-label": "South India Travel home" }
+            %span.brand-mark{ "aria-hidden": "true" } ◈
+            %span.brand-copy
+              %strong South India
+              %small Travel Beyond Ordinary
+          %p 11 years of experience handling 2000+ guests nationwide.
+          .social-links{ "aria-label": "Social media" }
+            %a{ href: "#contact", "aria-label": "Facebook" } f
+            %a{ href: "#contact", "aria-label": "Instagram" } ◎
+            %a{ href: "#contact", "aria-label": "WhatsApp" } ◉
+        .footer-column
+          %h2 Quick Links
+          - navigation.each do |item|
+            %a{ href: item[1] }= item[0]
+        .footer-column
+          %h2 Destinations
+          - destinations.each do |destination|
+            %a{ href: "#destinations" }= destination[:name]
+        .footer-column.footer-contact
+          %h2 Contact Us
+          %a{ href: "tel:+919876543210" } ☎ &nbsp; +91 98765 43210
+          %a{ href: "mailto:info@southindiatravel.com" } ✉ &nbsp; info@southindiatravel.com
+          %span ⌖ &nbsp; Chennai, India
+          %span ◷ &nbsp; Mon - Sat: 9:00 AM - 7:00 PM
+      .footer-bottom
+        .page-width
+          %span © 2024 South India Travel. All Rights Reserved.
+          %span Designed for your journey <b>♥</b>
+    %script{ src: "js/navigation.js", defer: true }
+    %script{ src: "js/booking.js", type: "module" }

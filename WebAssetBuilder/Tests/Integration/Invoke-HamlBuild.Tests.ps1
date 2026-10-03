@@ -1,5 +1,4 @@
 BeforeAll {
-    function global:haml { $global:LASTEXITCODE = 0 }
     Import-Module "$PSScriptRoot/../../WebAssetBuilder.psd1" -Force
 }
 
@@ -67,6 +66,9 @@ Describe 'Invoke-HamlBuild Integration Tests' {
         # Create a root file and a nested file to verify relative path structures.
         $validRootFile = Join-Path $hamlSrcDir "test.haml"
         Set-Content -Path $validRootFile -Value "%h1 Root"
+        $assetsDir = Join-Path $script:tempRoot "src/assets"
+        New-Item -ItemType Directory -Path $assetsDir -Force | Out-Null
+        Set-Content -Path (Join-Path $assetsDir "logo.svg") -Value "<svg></svg>"
 
         Invoke-HamlBuild -StartPath $script:tempRoot
 
@@ -77,5 +79,9 @@ Describe 'Invoke-HamlBuild Integration Tests' {
         # Verifies root file compilation.
         $compiledRootFile = Join-Path $htmlDistDir "test.html"
         Test-Path $compiledRootFile -PathType Leaf | Should-BeTrue
+
+        # Static assets are available beside generated pages in the distribution.
+        $copiedAsset = Join-Path $htmlDistDir "assets/logo.svg"
+        Test-Path $copiedAsset -PathType Leaf | Should-BeTrue
     }
 }

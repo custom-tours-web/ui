@@ -1,0 +1,1060 @@
+$ink = #111111
+$panel = #1a1a1a
+$panel-raised = #222222
+$line = rgba(220, 220, 220, .12)
+$muted = #b3b3b3
+$accent = #d0d0d0
+$accent-deep = #484848
+$page-max = 1170px
+
+card-surface()
+  background linear-gradient(145deg, rgba(38, 38, 38, .96), rgba(23, 23, 23, .98))
+  border 1px solid $line
+  border-radius 12px
+  box-shadow 0 10px 28px rgba(0, 0, 0, .2)
+
+focus-ring()
+  outline 2px solid $accent
+  outline-offset 3px
+
+*
+  box-sizing border-box
+
+html
+  scroll-behavior smooth
+  scroll-padding-top 82px
+  scrollbar-width none
+
+  &::-webkit-scrollbar
+    display none
+
+body
+  margin 0
+  background $ink
+  color #f2f2f2
+  font-family 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', monospace
+  font-size 14px
+  line-height 1.55
+  -webkit-font-smoothing antialiased
+
+img
+  display block
+  max-width 100%
+
+a
+  color inherit
+  text-decoration none
+
+button
+input
+select
+  font inherit
+
+button
+  cursor pointer
+
+a:focus-visible
+button:focus-visible
+input:focus-visible
+select:focus-visible
+  focus-ring()
+
+.page-width
+  width 100%
+  margin-inline auto
+  padding-inline 24px
+
+.site-header
+  position sticky
+  top 0
+  z-index 10
+  min-height 68px
+  background rgba(8, 8, 8, .96)
+  border-bottom 1px solid rgba(255, 255, 255, .07)
+
+.header-inner
+  display flex
+  align-items center
+  justify-content space-between
+  gap 24px
+  width 100%
+  min-height 68px
+  margin 0 auto
+  padding-inline 24px
+
+.brand
+  display inline-flex
+  align-items center
+  flex-shrink 0
+  gap 10px
+
+.brand-mark
+  display grid
+  width 45px
+  height 45px
+  place-items center
+  border 1px solid $accent
+  border-radius 50%
+  color $accent
+  font-size 29px
+  line-height 1
+
+.brand-copy
+  display grid
+  line-height 1.25
+
+  strong
+    font-family Monaco, 'Lucida Console', monospace
+    font-size 16px
+    font-weight 600
+
+  small
+    margin-top 3px
+    color $muted
+    font-size 10px
+    letter-spacing .02em
+
+.main-nav
+  position relative
+  display flex
+  align-items center
+  gap clamp(16px, 3vw, 42px)
+  margin-left auto
+
+  &::after
+    position absolute
+    bottom 15px
+    left var(--active-link-left, 0px)
+    width var(--active-link-width, 0px)
+    height 3px
+    background $accent
+    box-shadow 0 0 10px rgba(208, 208, 208, .45)
+    content ''
+    transition left .45s cubic-bezier(.22, 1, .36, 1), width .45s cubic-bezier(.22, 1, .36, 1)
+
+  a
+    position relative
+    padding 24px 0 22px
+    color #e6e6e6
+    font-size 13px
+    transition color .2s ease
+
+    &:hover
+    &.is-active
+      color $accent
+
+.header-contact
+  display flex
+  align-items center
+  gap 20px
+  white-space nowrap
+  font-size 12px
+
+.language-toggle
+  color #d8d8d8
+
+.phone-link
+  display inline-flex
+  align-items center
+  gap 8px
+
+.phone-icon
+  color $accent
+  font-size 18px
+
+.mobile-menu
+  display none
+
+.menu-toggle
+  list-style none
+
+  &::-webkit-details-marker
+    display none
+
+.hero
+  position relative
+  display flex
+  min-height clamp(330px, 34vw, 430px)
+  align-items center
+  overflow hidden
+  background #202020
+
+.hero-image
+  position absolute
+  inset 0
+  background-image url('../assets/hero-temple.jpg')
+  background-position center 46%
+  background-size cover
+  opacity .77
+
+.hero-shade
+  position absolute
+  inset 0
+  background linear-gradient(90deg, rgba(8, 8, 8, .95) 0%, rgba(8, 8, 8, .75) 40%, rgba(8, 8, 8, .22) 100%), linear-gradient(0deg, $ink 0%, transparent 28%, rgba(8, 8, 8, .1) 72%, rgba(8, 8, 8, .35) 100%)
+
+.hero-content
+  position relative
+  z-index 1
+  padding-block 46px 58px
+
+.eyebrow
+  margin 0 0 10px
+  color $accent
+  font-size 11px
+  font-weight 700
+  letter-spacing .16em
+  text-transform uppercase
+
+.hero h1
+  max-width 670px
+  margin 0
+  font-family 'Courier New', 'Liberation Mono', monospace
+  font-size clamp(34px, 4.1vw, 56px)
+  line-height 1.14
+
+  span
+    display block
+    color $accent
+    font-size 1.08em
+
+.hero-proof
+  display flex
+  flex-wrap wrap
+  align-items center
+  gap 10px
+  margin 18px 0 24px
+  color #ededed
+  font-size 13px
+
+  i
+    width 4px
+    height 4px
+    border-radius 50%
+    background $accent
+
+.hero-actions
+  display flex
+  flex-wrap wrap
+  gap 14px
+
+.button
+  display inline-flex
+  min-height 44px
+  align-items center
+  justify-content center
+  gap 10px
+  padding 0 18px
+  border 1px solid transparent
+  border-radius 6px
+  font-size 12px
+  font-weight 600
+  text-align center
+  text-transform uppercase
+  transition background .2s ease, border-color .2s ease, transform .2s ease
+
+  &:hover
+    transform translateY(-1px)
+
+.button-primary
+  background linear-gradient(100deg, $accent-deep, #5a5a5a)
+  color white
+
+  &:hover
+    background linear-gradient(100deg, #555555, #686868)
+
+.button-outline
+  border-color rgba(210, 210, 210, .65)
+  background rgba(12, 12, 12, .52)
+  color #e0e0e0
+
+  &:hover
+    background rgba(210, 210, 210, .12)
+
+.hero-actions .button
+  min-width 174px
+
+.hero-actions .button-outline
+  color white
+
+.trust-strip
+  position relative
+  z-index 2
+  display grid
+  grid-template-columns repeat(4, 1fr)
+  margin-top -16px
+  padding 15px 14px
+  card-surface()
+  background rgba(20, 20, 20, .94)
+
+.trust-item
+  display flex
+  align-items center
+  justify-content center
+  gap 14px
+  min-height 48px
+  border-right 1px solid $line
+
+  &:last-child
+    border-right 0
+
+.trust-icon
+  color $accent
+  font-size 30px
+  line-height 1
+  transition transform .35s cubic-bezier(.22, 1, .36, 1)
+
+.trust-item:has(.trust-copy:hover) .trust-icon
+  transform translateY(-6px) rotate(12deg) scale(1.15)
+
+.trust-copy
+  display grid
+  gap 1px
+
+  strong
+    color $accent
+    font-size 17px
+    font-weight 500
+
+  span
+    color #e3e3e3
+    font-size 11px
+
+.page-content
+  padding-top 28px
+  padding-bottom 36px
+
+.content-section
+  margin-top 38px
+
+.section-heading
+  margin-bottom 10px
+
+  h2
+    margin 0
+    font-family 'Lucida Console', Monaco, monospace
+    font-size 17px
+    font-weight 500
+
+.heading-rule
+  display block
+  width 36px
+  height 2px
+  margin-top 3px
+  background $accent
+
+.tour-grid
+  display grid
+  grid-template-columns repeat(3, minmax(0, 1fr))
+  gap 12px
+
+.tour-card
+  overflow hidden
+  padding 8px
+  card-surface()
+
+.card-image
+  width 100%
+  height 150px
+  border-radius 7px
+  object-fit cover
+
+.tour-card-body
+  padding 8px 10px 6px
+
+.tour-card h3
+  overflow hidden
+  margin 0 0 7px
+  font-family Consolas, 'Lucida Console', monospace
+  font-size 15px
+  font-weight 500
+  text-overflow ellipsis
+  white-space nowrap
+
+.price-row
+  display flex
+  align-items center
+  gap 7px
+  margin-top 4px
+  color $muted
+  font-size 11px
+
+  strong
+    color $accent
+    font-size 12px
+    font-weight 500
+
+.car-symbol
+  color #b3b3b3
+  font-size 17px
+
+.inclusions-link
+  display inline-block
+  margin-top 7px
+  color $accent
+  font-size 11px
+
+.button-small
+  width 100%
+  min-height 33px
+  margin-top 9px
+  padding 0 10px
+  font-size 11px
+
+.fleet-grid
+  display grid
+  grid-template-columns repeat(auto-fit, minmax(220px, 1fr))
+  gap 12px
+
+.fleet-card
+  display flex
+  min-width 0
+  max-width 300px
+  flex-direction column
+  align-items center
+  overflow hidden
+  padding 0 12px 10px
+  card-surface()
+
+  img
+    width calc(100% + 24px)
+    max-width none
+    height 130px
+    margin 0 -12px
+    object-fit contain
+    background rgba(5, 10, 14, .72)
+
+  h3
+    margin 7px 0 0
+    font-size 13px
+    font-weight 500
+
+  .button-small
+    width min(100%, 150px)
+    margin-top 7px
+
+.destination-grid
+  display grid
+  grid-template-columns repeat(5, minmax(0, 1fr))
+  gap 8px
+
+.destination-card
+  overflow hidden
+  padding 7px
+  border 1px solid $line
+  border-radius 10px
+  background linear-gradient(145deg, #252525, #171717)
+  text-align center
+  transition border-color .2s ease, transform .2s ease
+
+  &:hover
+    transform translateY(-2px)
+    border-color rgba(210, 210, 210, .55)
+
+  img
+    width 100%
+    height 132px
+    border-radius 6px
+    object-fit cover
+
+  span
+    display block
+    padding: 7px 2px 1px
+    font-size 12px
+
+.booking-panel
+  margin-top 38px
+  padding 28px 30px 24px
+  background linear-gradient(180deg, rgba(25, 27, 29, .96), rgba(14, 15, 17, .98))
+  border 1px solid rgba(255, 255, 255, .09)
+  border-radius 12px
+  box-shadow inset 0 1px 0 rgba(255, 255, 255, .04), 0 18px 35px rgba(0, 0, 0, .22)
+
+.booking-intro
+  h2
+    margin 0 0 12px
+    color #f2f2f2
+    font-family 'Courier New', 'Liberation Mono', monospace
+    font-size 22px
+    font-weight 500
+    letter-spacing .02em
+
+  p
+    margin 0 0 4px
+    color rgba(255, 255, 255, .76)
+    font-size 14px
+    line-height 1.5
+
+.booking-form
+  display grid
+  grid-template-columns repeat(6, minmax(0, 1fr))
+  grid-template-areas 'name name phone phone location location' 'destination destination destination travelers travelers travelers' 'from-date from-date from-date to-date to-date to-date' 'special-requests special-requests special-requests special-requests special-requests special-requests' 'submit submit submit submit submit submit'
+  gap 18px 20px
+  margin-top 24px
+
+.form-field
+  position relative
+  display flex
+  min-width 0
+  min-height 54px
+  align-items center
+  grid-column span 2
+  border 1px solid rgba(255, 255, 255, .08)
+  border-radius 8px
+  background rgba(255, 255, 255, .02)
+  transition border-color .2s ease, box-shadow .2s ease
+
+  &:focus-within
+    border-color rgba(255, 255, 255, .36)
+    box-shadow 0 0 0 1px rgba(255, 255, 255, .06)
+
+  input
+  select
+  textarea
+    width 100%
+    min-width 0
+    padding 0 14px 0 0
+    border 0
+    outline 0
+    background transparent
+    color #f4f4f4
+    font-size 13px
+    letter-spacing .01em
+
+  input
+  select
+    height 100%
+
+  textarea
+    min-height 72px
+    padding 12px 14px
+    resize vertical
+
+    &::placeholder
+      color rgba(255, 255, 255, .6)
+      opacity 1
+
+  select
+    appearance none
+    padding-right 28px
+    color rgba(255, 255, 255, .72)
+
+  option
+    background #1a1d20
+    color #fff
+
+.field-name
+  grid-area name
+
+.field-phone
+  grid-area phone
+
+.field-location
+  grid-area location
+
+.field-destination
+  grid-area destination
+
+.field-travelers
+  grid-area travelers
+
+.date-field
+  display flex
+  flex-direction column
+  align-items stretch
+  justify-content center
+  padding 6px 12px
+
+  input
+    flex 1
+    padding 0
+
+.field-from-date
+  grid-area from-date
+
+.field-to-date
+  grid-area to-date
+
+.field-special-requests
+  grid-area special-requests
+
+.date-label
+  color rgba(255, 255, 255, .55)
+  font-size 10px
+  line-height 1.2
+
+.field-icon
+  flex-shrink 0
+  padding-left 14px
+  color rgba(255, 255, 255, .68)
+  font-size 15px
+
+.select-icon
+  position absolute
+  right 14px
+  color rgba(255, 255, 255, .8)
+  pointer-events none
+
+.visually-hidden
+  position absolute
+  width 1px
+  height 1px
+  padding 0
+  overflow hidden
+  clip rect(0, 0, 0, 0)
+  white-space nowrap
+  border 0
+
+.submit-button
+  grid-area submit
+  justify-self center
+  width 100%
+  max-width 280px
+  min-height 44px
+  margin-top 2px
+  border 1px solid rgba(255, 255, 255, .08)
+  border-radius 8px
+  background linear-gradient(180deg, rgba(172, 172, 172, .85), rgba(112, 112, 112, .9))
+  color #fcfcfc
+  font-size 12px
+  letter-spacing .12em
+  text-transform uppercase
+  box-shadow inset 0 1px 0 rgba(255, 255, 255, .1)
+
+  &:hover
+    background linear-gradient(180deg, rgba(190, 190, 190, .9), rgba(122, 122, 122, .95))
+
+.submit-button:disabled
+  cursor wait
+  opacity .7
+
+.booking-status
+  min-height 1.5em
+  margin 14px 0 0
+  color rgba(255, 255, 255, .8)
+  font-size 13px
+  text-align center
+
+  &:empty
+    display none
+
+  &.is-success
+    color #9bd6a8
+
+  &.is-error
+    color #ff9a9a
+
+.testimonial
+  display flex
+  align-items center
+  gap 18px
+  width 100%
+  max-width 760px
+  margin-top 24px
+  margin-inline auto
+  padding 16px 22px
+  background linear-gradient(180deg, rgba(22, 24, 26, .95), rgba(17, 19, 21, .98))
+  border 1px solid rgba(255, 255, 255, .08)
+  border-radius 12px
+
+  &:hover .rating-star
+  &:focus-within .rating-star
+    color #f5c542
+    text-shadow 0 0 7px rgba(245, 197, 66, .55)
+    transform scale(1.15)
+    transition-delay 0s
+
+  &:hover .rating-star:nth-child(2)
+  &:focus-within .rating-star:nth-child(2)
+    transition-delay .12s
+
+  &:hover .rating-star:nth-child(3)
+  &:focus-within .rating-star:nth-child(3)
+    transition-delay .24s
+
+  &:hover .rating-star:nth-child(4)
+  &:focus-within .rating-star:nth-child(4)
+    transition-delay .36s
+
+  &:hover .rating-star:nth-child(5)
+  &:focus-within .rating-star:nth-child(5)
+    transition-delay .48s
+
+.quote-mark
+  display grid
+  width 72px
+  height 72px
+  flex-shrink 0
+  place-items center
+  border 1px solid rgba(255, 255, 255, .22)
+  border-radius 50%
+  background rgba(255, 255, 255, .02)
+  color rgba(255, 255, 255, .9)
+  font-family Georgia, 'Times New Roman', serif
+  font-size 82px
+  font-weight 700
+  line-height .8
+
+.testimonial-copy
+  flex 1
+
+  p
+    margin 2px 0
+    color rgba(255, 255, 255, .9)
+    font-size 13px
+    line-height 1.5
+
+.rating
+  display inline-flex
+  flex-shrink 0
+  gap 4px
+  font-size 20px
+  white-space nowrap
+
+.rating-star
+  display inline-block
+  color rgba(255, 255, 255, .82)
+  transition color .25s ease, text-shadow .25s ease, transform .25s ease
+
+  &:nth-child(1)
+    transition-delay .48s
+
+  &:nth-child(2)
+    transition-delay .36s
+
+  &:nth-child(3)
+    transition-delay .24s
+
+  &:nth-child(4)
+    transition-delay .12s
+
+  &:nth-child(5)
+    transition-delay 0s
+
+.site-footer
+  border-top 1px solid $line
+  background #0d0d0d
+
+.footer-main
+  display grid
+  grid-template-columns repeat(4, minmax(0, 1fr))
+  gap 34px
+  padding-block 23px
+
+.footer-about
+  .brand
+    margin-bottom 9px
+
+  p
+    max-width 240px
+    margin 0 0 10px
+    color $muted
+    font-size 11px
+
+.social-links
+  display flex
+  gap 12px
+
+  a
+    display grid
+    width 26px
+    height 26px
+    place-items center
+    border: 1px solid rgba(255, 255, 255, .25)
+    border-radius 50%
+    color #e2e2e2
+    font-weight 700
+
+.footer-column
+  display flex
+  flex-direction column
+  gap 4px
+
+  h2
+    margin 1px 0 5px
+    font-size 12px
+    font-weight 600
+
+  a
+  span
+    color $muted
+    font-size 11px
+
+  a:hover
+    color $accent
+
+.footer-contact
+  padding-right 28px
+
+.footer-bottom
+  border-top 1px solid rgba(255, 255, 255, .08)
+  color #b0b0b0
+  font-size 10px
+
+  .page-width
+    display flex
+    justify-content space-between
+    gap 16px
+    padding-block 10px
+
+  b
+    color $accent
+
+@media (min-width: 1450px)
+  .hero
+    min-height 460px
+
+  .card-image
+    height 180px
+
+  .fleet-card img
+    height 135px
+
+@media (max-width: 900px)
+  .destination-grid
+    grid-template-columns repeat(3, minmax(0, 1fr))
+
+  .header-inner
+    gap 14px
+
+  .main-nav
+    gap 16px
+
+  .header-contact
+    gap 10px
+    font-size 11px
+
+  .language-toggle
+    display none
+
+  .card-image
+    height 125px
+
+  .destination-card img
+    height 110px
+
+@media (max-width: 680px)
+  html
+    scroll-padding-top 12px
+
+  .page-width
+    padding-inline 14px
+
+  .header-inner
+    min-height 62px
+    padding-inline 14px
+
+  .brand-mark
+    width 39px
+    height 39px
+    font-size 25px
+
+  .brand-copy strong
+    font-size 14px
+
+  .brand-copy small
+    font-size 9px
+
+  .main-nav
+    display none
+
+  .header-contact
+    margin-left auto
+
+  .phone-link span:last-child
+    display none
+
+  .mobile-menu
+    display flex
+    position relative
+    align-items center
+
+  .menu-toggle
+    display flex
+    width 36px
+    height 36px
+    flex-direction column
+    align-items center
+    justify-content center
+    gap 5px
+    border 1px solid $line
+    border-radius 5px
+    background transparent
+
+    span
+      width 16px
+      height 1px
+      background #eaeaea
+
+  .mobile-menu-panel
+    position absolute
+    top calc(100% + 8px)
+    right 0
+    display grid
+    min-width 170px
+    padding 6px
+    border 1px solid $line
+    border-radius 7px
+    background $panel
+    box-shadow 0 10px 25px rgba(0, 0, 0, .35)
+
+    a
+      padding 9px 10px
+      border-radius 4px
+      color #e6e6e6
+      font-size 13px
+
+      &:hover
+        background rgba(210, 210, 210, .1)
+        color $accent
+
+  .hero
+    min-height 360px
+
+  .hero-image
+    background-position 58% center
+
+  .hero-shade
+    background linear-gradient(90deg, rgba(8, 8, 8, .88), rgba(8, 8, 8, .45)), linear-gradient(0deg, $ink 0%, transparent 45%)
+
+  .hero-content
+    padding-block 38px 48px
+
+  .eyebrow
+    font-size 9px
+
+  .hero h1
+    font-size clamp(33px, 9vw, 46px)
+
+  .hero-proof
+    max-width 360px
+    gap 7px
+    font-size 11px
+
+  .hero-actions
+    gap 9px
+
+  .hero-actions .button
+    min-width 0
+    padding-inline 12px
+    font-size 10px
+
+  .trust-strip
+    grid-template-columns repeat(2, 1fr)
+    gap 0
+    margin-top -12px
+    padding 8px
+
+  .trust-item
+    justify-content flex-start
+    padding: 8px 11px
+    border-right 0
+
+    &:nth-child(odd)
+      border-right 1px solid $line
+
+    &:nth-child(-n + 2)
+      border-bottom 1px solid $line
+
+  .trust-icon
+    font-size 25px
+
+  .trust-copy strong
+    font-size 15px
+
+  .page-content
+    padding-top 8px
+    padding-bottom 24px
+
+  .content-section
+    margin-top 30px
+
+  .tour-grid
+    grid-template-columns 1fr
+    gap 10px
+
+  .tour-card
+    display grid
+    grid-template-columns minmax(112px, 38%) 1fr
+    gap 0
+    align-items center
+    padding 7px
+
+  .card-image
+    height 100%
+    min-height 146px
+    grid-row 1 / span 2
+    object-fit cover
+
+  .tour-card-body
+    padding 7px 10px
+
+  .tour-card h3
+    font-size 14px
+
+  .button-small
+    min-height 31px
+    margin-top 7px
+    font-size 10px
+
+  .fleet-grid
+    grid-template-columns repeat(2, minmax(0, 1fr))
+    gap 9px
+
+  .fleet-card
+    padding 0 8px 8px
+
+    img
+      width calc(100% + 16px)
+      height 100px
+      margin-inline -8px
+
+  .destination-grid
+    grid-template-columns repeat(2, minmax(0, 1fr))
+    gap 9px
+
+  .destination-card img
+    height 112px
+
+  .booking-panel
+    margin-top 30px
+    padding 20px 18px
+
+  .booking-form
+    grid-template-columns minmax(0, 1fr)
+    grid-template-areas 'name' 'phone' 'location' 'destination' 'travelers' 'from-date' 'to-date' 'special-requests' 'submit'
+    gap 12px
+    margin-top 18px
+
+  .testimonial
+    gap 12px
+    margin-top 18px
+    padding 12px
+
+  .quote-mark
+    width 54px
+    height 54px
+    font-size 62px
+
+  .testimonial-copy p
+    font-size 10px
+
+  .rating
+    display none
+
+  .footer-main
+    grid-template-columns repeat(2, minmax(0, 1fr))
+    gap 20px 14px
+    padding-block 20px
+
+  .footer-about
+    grid-column 1 / -1
+
+  .footer-bottom .page-width
+    flex-direction column
+    gap 3px
+
+@media (prefers-reduced-motion: reduce)
+  *
+    scroll-behavior auto !important
+    transition-duration .01ms !important
+    animation-duration .01ms !important

@@ -1,0 +1,61 @@
+name: 🧪 Tests & Reporter
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  test-and-report:
+    name: 🧪 Run Tests & Report
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # 📥 Get the source code
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v7
+
+      # ⚙️ Configure the .NET SDK
+      - name: ⚙️ Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      # 🔧 Restore required local tools
+      - name: 🔧 Restore Local Tools
+        run: dotnet tool restore
+
+      # 🧹 Clean and restore dependencies
+      - name: 🧹 Clean & Restore
+        run: dotnet cake ./scripts/build.cake --target="Restore"
+
+      # 🏗️ Build the application
+      - name: 🏗️ Build App
+        run: dotnet cake ./scripts/build.cake --target="Build" --exclusive
+
+      # 🧪 Execute test suite
+      - name: 🧪 Run Tests
+        continue-on-error: true
+        run: dotnet cake ./scripts/build.cake --target="Test" --exclusive
+
+      # 📊 Publish test results to GitHub
+      - name: 📊 Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@d0a4676d0e0b938bc201470d88276b7c74c712b3 # v2.24.0
+
+        # 🔄 Always publish results, even when tests fail
+        if: always()
+
+        with:
+          # 📄 Locate generated .trx test result files
+          files: "artifacts/TestResults/**/*.trx"
+
+          # ✅ Create a GitHub check with test results
+          check_name: "🧪 Run Tests"

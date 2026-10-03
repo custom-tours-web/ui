@@ -1,0 +1,74 @@
+name: 🏷️ Auto Label PR
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+# 🔐 Required permission to add labels and reviewers to PRs
+permissions:
+  pull-requests: write
+
+jobs:
+  apply-labels:
+    name: 🏷️ Apply Labels & 👤 Reviewers
+    runs-on: windows-latest
+
+    steps:
+
+      # 🏷️ Evaluate Branch & Apply Label
+      - name: 🔍 Evaluate Branch Name & Apply Label
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BRANCH_NAME: ${{ github.head_ref }}
+
+        run: |
+          Write-Host "🔍 Evaluating branch name: $env:BRANCH_NAME"
+
+          # 🚀 Check for Feature branches
+          if ($env:BRANCH_NAME -like "feature/*" -or $env:BRANCH_NAME -like "feat/*") {
+              gh pr edit $env:PR_NUMBER --repo $env:GITHUB_REPOSITORY --add-label "enhancement"
+              Write-Host "✅ Added 'enhancement' label."
+          }
+
+          # 🐛 Check for Bugfix branches
+          elseif ($env:BRANCH_NAME -like "bug/*" -or $env:BRANCH_NAME -like "fix/*" -or $env:BRANCH_NAME -like "bugfix/*") {
+              gh pr edit $env:PR_NUMBER --repo $env:GITHUB_REPOSITORY --add-label "bug"
+              Write-Host "🐛 Added 'bug' label."
+          }
+
+          # ♻️ Check for Refactor / Chore branches
+          elseif ($env:BRANCH_NAME -like "refactor/*" -or $env:BRANCH_NAME -like "chore/*") {
+              gh pr edit $env:PR_NUMBER --repo $env:GITHUB_REPOSITORY --add-label "chore"
+              Write-Host "🧹 Added 'chore' label."
+          }
+
+          # 📚 Check for Documentation branches
+          elseif ($env:BRANCH_NAME -like "docs/*") {
+              gh pr edit $env:PR_NUMBER --repo $env:GITHUB_REPOSITORY --add-label "documentation"
+              Write-Host "📚 Added 'documentation' label."
+          }
+
+          # ℹ️ Default fallback
+          else {
+              Write-Host "ℹ️ Branch name does not match known prefixes. No labels added."
+          }
+
+
+      # 👤 Assign Default Code Reviewers
+      - name: 👤 Assign Code Reviewers
+        # 🎯 Only auto-assign reviewers when the PR is initially created
+        if: github.event.action == 'opened'
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+        run: |
+          Write-Host "👤 Assigning default reviewers to PR #$env:PR_NUMBER"
+
+          gh pr edit $env:PR_NUMBER --repo $env:GITHUB_REPOSITORY --add-reviewer "hariofficial"
+
+          # 💡 For GitHub Organizations, you can also assign entire teams:
+          # gh pr edit $env:PR_NUMBER --repo $env:GITHUB_REPOSITORY --add-reviewer "your-org/backend-team"

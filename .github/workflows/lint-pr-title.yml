@@ -1,0 +1,40 @@
+name: 🏷️ Lint PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+  statuses: write
+
+jobs:
+  lint-title:
+    name: 🔍 Validate PR Title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📝 Check PR Title
+        uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+
+        env:
+          # 🔑 GitHub authentication token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        with:
+          # 📝 Define the allowed commit / PR title types
+          types: |
+            feat
+            fix
+            chore
+            docs
+            refactor
+            test
+            ci
+            perf
+
+          # 🎯 Require a scope (e.g., feat(api): instead of just feat:)
+          requireScope: false
+
+          # 🚧 Allow PRs starting with [WIP] to bypass checks during development
+          wip: true

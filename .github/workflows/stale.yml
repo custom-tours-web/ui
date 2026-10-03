@@ -1,0 +1,46 @@
+name: 🧹 Close Stale Items
+
+on:
+  schedule:
+    # ⏰ Run every day at 1:30 AM UTC
+    - cron: '30 1 * * *'
+
+  # ▶️ Allows manual execution from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: 🧹 Mark & Close Stale Items
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🤖 Manage Stale Items
+        uses: actions/stale@v11
+
+        with:
+          # ⏱️ Timing Configuration (in days)
+          days-before-stale: 30
+          days-before-close: 7
+
+          # 🏷️ Labels Applied
+          stale-issue-label: 'stale'
+          stale-pr-label: 'stale'
+
+          # 🛡️ Exclusions (Items to never close)
+          exempt-issue-labels: 'bug,security,pinned'
+          exempt-pr-labels: 'dependencies,do-not-merge'
+
+          # ⚠️ Warning Messages
+          stale-issue-message: >
+            ⚠️ This issue has been automatically marked as stale because it has not had
+            recent activity in 30 days. It will be closed in 7 days if no further
+            activity occurs. 🙏 Thank you for your contribution!
+
+          stale-pr-message: >
+            ⚠️ This pull request has been automatically marked as stale because it has not had
+            recent activity in 30 days. It will be closed in 7 days if no further
+            activity occurs. 🔄 Please update the PR or leave a comment to keep it open.
