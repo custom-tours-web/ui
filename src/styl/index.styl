@@ -137,11 +137,32 @@ select:focus-visible
     padding 24px 0 22px
     color #e6e6e6
     font-size 13px
+    animation nav-link-rise .6s cubic-bezier(.22, 1, .36, 1) both
     transition color .2s ease
 
     &:hover
     &.is-active
       color $accent
+
+  a:nth-of-type(2)
+    animation-delay .08s
+
+  a:nth-of-type(3)
+    animation-delay .16s
+
+  a:nth-of-type(4)
+    animation-delay .24s
+
+  a:nth-of-type(5)
+    animation-delay .32s
+
+@keyframes nav-link-rise
+  from
+    opacity 0
+    transform translateY(18px)
+  to
+    opacity 1
+    transform translateY(0)
 
 .header-contact
   display flex
@@ -342,10 +363,62 @@ select:focus-visible
   margin-top 3px
   background $accent
 
-.tour-grid
+.carousel-shell
   display grid
-  grid-template-columns repeat(3, minmax(0, 1fr))
+  grid-template-columns minmax(0, 1fr)
+  align-items center
+
+  &.is-scrollable
+    grid-template-columns 32px minmax(0, 1fr) 32px
+    gap 8px
+
+.carousel-track
+  display flex
+  min-width 0
+  overflow-x auto
+  overscroll-behavior-inline contain
+  scrollbar-width none
+  scroll-snap-type x mandatory
+
+  &::-webkit-scrollbar
+    display none
+
+  > *
+    flex-grow 1
+    flex-shrink 0
+    scroll-snap-align start
+
+.carousel-control
+  display none
+  width 32px
+  height 42px
+  place-items center
+  padding 0
+  border 1px solid $line
+  border-radius 7px
+  background rgba(255, 255, 255, .05)
+  color #e6e6e6
+  font-size 27px
+  line-height 1
+  cursor pointer
+  transition background .2s ease, border-color .2s ease, opacity .2s ease
+
+  .is-scrollable > &
+    display grid
+
+  &:hover:not(:disabled)
+    border-color rgba(210, 210, 210, .55)
+    background rgba(255, 255, 255, .12)
+
+  &:disabled
+    opacity .3
+    cursor default
+
+.tour-grid
   gap 12px
+
+  > *
+    flex-basis calc((100% - 24px) / 3)
 
 .tour-card
   overflow hidden
@@ -395,20 +468,20 @@ select:focus-visible
 
 .button-small
   width 100%
+  max-width 150px
   min-height 33px
   margin-top 9px
   padding 0 10px
   font-size 11px
 
 .fleet-grid
-  display grid
-  grid-template-columns repeat(auto-fit, minmax(220px, 1fr))
   gap 12px
 
 .fleet-card
   display flex
   min-width 0
-  max-width 300px
+  flex-basis clamp(220px, 22vw, 300px)
+  max-width none
   flex-direction column
   align-items center
   overflow hidden
@@ -423,21 +496,25 @@ select:focus-visible
     object-fit contain
     background rgba(5, 10, 14, .72)
 
+  img[src$=".jpg"]
+    object-fit cover
+
   h3
     margin 7px 0 0
     font-size 13px
     font-weight 500
 
   .button-small
-    width min(100%, 150px)
+    width 100%
+    max-width 150px
     margin-top 7px
 
 .destination-grid
-  display grid
-  grid-template-columns repeat(5, minmax(0, 1fr))
   gap 8px
 
 .destination-card
+  flex-grow 1
+  flex-basis clamp(220px, 18vw, 260px)
   overflow hidden
   padding 7px
   border 1px solid $line
@@ -554,6 +631,9 @@ select:focus-visible
 .field-destination
   grid-area destination
 
+  select
+    padding-left 14px
+
 .field-travelers
   grid-area travelers
 
@@ -585,6 +665,7 @@ select:focus-visible
 .field-icon
   flex-shrink 0
   padding-left 14px
+  margin-right 7px
   color rgba(255, 255, 255, .68)
   font-size 15px
 
@@ -785,6 +866,36 @@ select:focus-visible
 .footer-contact
   padding-right 28px
 
+  .footer-contact-icon
+    display inline-block
+    transform-origin center top
+
+  &.is-visible .footer-contact-icon
+    animation contact-icon-drop .65s cubic-bezier(.2, .75, .3, 1.2) both
+
+  > :nth-child(2) .footer-contact-icon
+    animation-delay .08s
+
+  > :nth-child(3) .footer-contact-icon
+    animation-delay .16s
+
+  > :nth-child(4) .footer-contact-icon
+    animation-delay .24s
+
+  > :nth-child(5) .footer-contact-icon
+    animation-delay .32s
+
+@keyframes contact-icon-drop
+  from
+    opacity 0
+    transform translateY(-18px) rotate(-12deg)
+  70%
+    opacity 1
+    transform translateY(3px) rotate(3deg)
+  to
+    opacity 1
+    transform translateY(0) rotate(0)
+
 .footer-bottom
   border-top 1px solid rgba(255, 255, 255, .08)
   color #b0b0b0
@@ -810,9 +921,6 @@ select:focus-visible
     height 135px
 
 @media (max-width: 900px)
-  .destination-grid
-    grid-template-columns repeat(3, minmax(0, 1fr))
-
   .header-inner
     gap 14px
 
@@ -832,10 +940,14 @@ select:focus-visible
   .destination-card img
     height 110px
 
-@media (max-width: 680px)
-  html
-    scroll-padding-top 12px
+@media (min-width: 681px) and (max-width: 1200px)
+  .fleet-card
+    flex 0 0 calc((100% - 24px) / 3)
 
+  .destination-card
+    flex 0 0 calc((100% - 24px) / 4)
+
+@media (max-width: 680px)
   .page-width
     padding-inline 14px
 
@@ -968,39 +1080,70 @@ select:focus-visible
   .content-section
     margin-top 30px
 
+  .carousel-shell
+    &.is-scrollable
+      grid-template-columns 26px minmax(0, 1fr) 26px
+      gap 5px
+
+  .carousel-control
+    width 26px
+    height 36px
+    font-size 22px
+
   .tour-grid
-    grid-template-columns 1fr
     gap 10px
 
   .tour-card
+    flex 0 0 100%
     display grid
-    grid-template-columns minmax(112px, 38%) 1fr
-    gap 0
+    grid-template-columns minmax(76px, 30%) minmax(0, 1fr)
+    gap 6px
     align-items center
-    padding 7px
+    padding 6px
 
   .card-image
     height 100%
-    min-height 146px
+    min-height 116px
     grid-row 1 / span 2
     object-fit cover
 
   .tour-card-body
-    padding 7px 10px
+    min-width 0
+    padding 5px
 
   .tour-card h3
-    font-size 14px
+    font-size 11px
+    white-space normal
 
-  .button-small
-    min-height 31px
-    margin-top 7px
-    font-size 10px
+  .price-row
+    justify-content space-between
+    gap 4px
+    font-size 8px
+
+    strong
+      font-size 8px
+
+  .car-symbol
+    display none
+
+  .tour-card .button-small
+    width 90%
+    max-width 112px
+    justify-self center
+    min-height 26px
+    margin-top 5px
+    padding-inline 4px
+    font-size 9px
+
+  .inclusions-link
+    margin-top 5px
+    font-size 9px
 
   .fleet-grid
-    grid-template-columns repeat(2, minmax(0, 1fr))
     gap 9px
 
   .fleet-card
+    flex: 0 0 100%
     padding 0 8px 8px
 
     img
@@ -1008,22 +1151,57 @@ select:focus-visible
       height 100px
       margin-inline -8px
 
+    .button-small
+      width 80%
+      max-width 130px
+
   .destination-grid
-    grid-template-columns repeat(2, minmax(0, 1fr))
     gap 9px
+
+  .destination-card
+    flex: 0 0 100%
 
   .destination-card img
     height 112px
 
   .booking-panel
     margin-top 30px
-    padding 20px 18px
+    padding 16px 14px
 
   .booking-form
-    grid-template-columns minmax(0, 1fr)
-    grid-template-areas 'name' 'phone' 'location' 'destination' 'travelers' 'from-date' 'to-date' 'special-requests' 'submit'
-    gap 12px
-    margin-top 18px
+    grid-template-columns repeat(2, minmax(0, 1fr))
+    grid-template-areas 'name phone' 'location location' 'destination destination' 'travelers travelers' 'from-date to-date' 'special-requests special-requests' 'submit submit'
+    gap 7px
+    margin-top 12px
+
+  .booking-intro h2
+    margin-bottom 8px
+    font-size 20px
+
+  .booking-intro p
+    font-size 12px
+
+  .form-field
+    min-height 44px
+
+  .date-field
+    min-height 50px
+    padding-inline 7px
+
+    input
+      font-size 10px
+
+  .form-field textarea
+    min-height 50px
+
+  .submit-button
+    width 45%
+    max-width 120px
+    min-height 28px
+    margin-top 0
+    padding-inline 4px
+    font-size 9px
+
 
   .testimonial
     gap 12px
@@ -1049,9 +1227,66 @@ select:focus-visible
   .footer-about
     grid-column 1 / -1
 
+    p
+      width 100%
+      max-width none
+
+  .footer-contact
+    grid-column 1 / -1
+    padding-right 0
+
+    > a
+    > span
+      display grid
+      grid-template-columns 14px minmax(0, 1fr)
+      align-items start
+      gap 8px
+
+    .footer-contact-icon
+      width 14px
+      margin-right 0
+      text-align center
+
+    .footer-contact-copy
+      min-width 0
+      overflow-wrap anywhere
+
   .footer-bottom .page-width
     flex-direction column
     gap 3px
+
+@media (max-width: 379px)
+  .booking-panel
+    padding 12px 10px
+
+  .booking-form
+    gap 5px
+    margin-top 10px
+
+  .booking-intro h2
+    margin-bottom 5px
+    font-size 18px
+
+  .booking-intro p
+    font-size 11px
+    line-height 1.35
+
+  .form-field
+    min-height 40px
+
+  .date-field
+    min-height 44px
+    padding-inline 5px
+
+    input
+      font-size 9px
+
+  .form-field textarea
+    min-height 44px
+    padding-block 8px
+
+  .submit-button
+    min-height 34px
 
 @media (prefers-reduced-motion: reduce)
   *

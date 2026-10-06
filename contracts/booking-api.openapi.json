@@ -1,0 +1,94 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Booking API consumer contract",
+    "version": "1.0.0",
+    "description": "The frontend's expected contract for submitting a booking request."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5166"
+    }
+  ],
+  "paths": {
+    "/api/v1/booking-requests": {
+      "post": {
+        "operationId": "createBookingRequest",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Booking request accepted."
+          },
+          "201": {
+            "description": "Booking request created."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BookingRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fullName",
+          "phoneNumber",
+          "currentLocation",
+          "destination",
+          "fromDate",
+          "toDate",
+          "numberOfMembers",
+          "specialRequests"
+        ],
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "phoneNumber": {
+            "type": "string",
+            "minLength": 1
+          },
+          "currentLocation": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string",
+            "enum": [
+              "chennai",
+              "pondicherry",
+              "madurai",
+              "kanyakumari",
+              "ooty"
+            ]
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "numberOfMembers": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "specialRequests": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

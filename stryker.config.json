@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "mutate": ["src/ts/**/*.ts", "!src/ts/test.ts"],
+  "testRunner": "command",
+  "commandRunner": {
+    "command": "npm test"
+  },
+  "reporters": ["clear-text", "progress", "progress-append-only", "dots", "event-recorder", "html", "json"],
+  "coverageAnalysis": "all",
+  "logLevel": "trace",
+  "dashboard": {
+    "project": "github.com/custom-tours-web/api",
+    "module": "ui",
+    "version": "0.0.1"
+  },
+  "thresholds": {
+    "high": 75,
+    "low": 60,
+    "break": 50
+  }
+}

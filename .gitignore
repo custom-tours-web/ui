@@ -1,2 +1,9 @@
 dist
 TestResults
+node_modules
+.stryker-tmp
+playwright-report
+test-results
+reports
+coverage
+.DS_Store

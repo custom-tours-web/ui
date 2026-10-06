@@ -1,4 +1,5 @@
 import type { BookingRequest } from "./booking-request";
+import { createBookingRequest, isBookingDateRangeValid } from "./booking-utils";
 
 interface BookingFormControls {
   fullName: HTMLInputElement;
@@ -63,44 +64,17 @@ function setBookingStatus(
   status.classList.add(`is-${state}`);
 }
 
-function getLocalDateValue(date: Date): string {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("-");
-}
-
 function validateBookingDates(fromDate: HTMLInputElement, toDate: HTMLInputElement): boolean {
   fromDate.setCustomValidity("");
   toDate.setCustomValidity("");
 
-  if (fromDate.value > getLocalDateValue(new Date())) {
-    fromDate.setCustomValidity("From Date cannot be after today.");
-    fromDate.reportValidity();
-    return false;
-  }
-
-  if (toDate.value < fromDate.value) {
+  if (!isBookingDateRangeValid(fromDate.value, toDate.value)) {
     toDate.setCustomValidity("To Date cannot be before From Date.");
     toDate.reportValidity();
     return false;
   }
 
   return true;
-}
-
-function createBookingRequest(controls: BookingFormControls): BookingRequest {
-  return {
-    fullName: controls.fullName.value.trim(),
-    phoneNumber: controls.phoneNumber.value.trim(),
-    currentLocation: controls.currentLocation.value.trim(),
-    destination: controls.destination.value,
-    fromDate: controls.fromDate.value,
-    toDate: controls.toDate.value,
-    numberOfMembers: Number(controls.numberOfMembers.value),
-    specialRequests: controls.specialRequests.value.trim(),
-  };
 }
 
 async function sendBookingRequest(payload: BookingRequest): Promise<void> {
@@ -148,7 +122,16 @@ async function handleBookingSubmit(
     return;
   }
 
-  const payload = createBookingRequest(controls);
+  const payload = createBookingRequest({
+    fullName: controls.fullName.value,
+    phoneNumber: controls.phoneNumber.value,
+    currentLocation: controls.currentLocation.value,
+    destination: controls.destination.value,
+    fromDate: controls.fromDate.value,
+    toDate: controls.toDate.value,
+    numberOfMembers: controls.numberOfMembers.value,
+    specialRequests: controls.specialRequests.value,
+  });
   const buttonLabel = controls.submitButton.textContent;
   setSubmitting(controls.submitButton, true, buttonLabel);
   status.textContent = "";
@@ -177,6 +160,26 @@ async function handleBookingSubmit(
 function initializeBookingForm(): void {
   if (!bookingForm || !bookingStatus) {
     return;
+  }
+
+  const destination = bookingForm.querySelector<HTMLSelectElement>("#destination");
+  const destinationLinks = document.querySelectorAll<HTMLAnchorElement>(
+    "a[data-booking-destination]",
+  );
+
+  if (destination) {
+    destinationLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        const selectedDestination = link.dataset.bookingDestination;
+        const matchingOption = Array.from(destination.options).find(
+          (option) => option.value === selectedDestination,
+        );
+
+        if (matchingOption) {
+          destination.value = matchingOption.value;
+        }
+      });
+    });
   }
 
   bookingForm.addEventListener("submit", (event: SubmitEvent) => {

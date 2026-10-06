@@ -10,6 +10,100 @@ This project compiles a modern web stack using native CLI tools without relying 
 - **Stylus** → CSS
 - **TypeScript** → JavaScript
 
+## 🧪 Running the TypeScript unit tests
+
+Install the test dependencies once, then run the tests from the project root:
+
+```bash
+npm install
+npm test
+```
+
+The unit suite uses Vitest and jsdom to cover booking date validation, request payload creation,
+booking form submission and errors, destination preselection, and mobile navigation behavior.
+Integration tests render the HAML page and exercise complete interactions across the page scripts.
+Component tests mount isolated navigation widgets and check their user interactions and state.
+The booking API contract test validates the actual frontend request against the OpenAPI contract in
+`contracts/booking-api.openapi.json`. These tests verify the frontend's expectations; provider
+verification requires running the backend against the same contract.
+Run the non-browser tests with `npm test`, browser E2E tests separately with `npm run test:e2e`,
+component tests with `npm run test:component`, integration tests with
+`npm run test:integration`, contract tests with `npm run test:contract`, or use `npm run test:watch`
+while editing. HAML-backed tests require the HAML CLI.
+
+Generate a TypeScript coverage summary plus HTML and LCOV reports with:
+
+```bash
+npm run test:coverage
+```
+
+Open `coverage/index.html` for the browsable report. The LCOV report is written to
+`coverage/lcov.info`.
+
+Generate a separate report using only the full-page integration tests with:
+
+```bash
+npm run test:coverage:integration
+```
+
+This report covers the booking and navigation modules exercised by those flows and is written to
+`coverage/integration/index.html` and `coverage/integration/lcov.info`.
+
+Generate a separate report using only the booking API contract tests with:
+
+```bash
+npm run test:coverage:contract
+```
+
+The report covers the booking modules exercised by the contract tests and is written to
+`coverage/contract/index.html` and `coverage/contract/lcov.info`.
+
+Generate a separate report using only the UI component tests with:
+
+```bash
+npm run test:coverage:component
+```
+
+The report covers the navigation module exercised by those tests and is written to
+`coverage/component/index.html` and `coverage/component/lcov.info`.
+
+Generate browser-execution coverage from the end-to-end tests with:
+
+```bash
+npx playwright install chromium
+npm run test:coverage:e2e
+```
+
+This rebuilds the app with source maps, collects Chromium JavaScript coverage during the browser
+tests, and writes HTML and LCOV reports under `coverage/e2e/`, mapped back to the TypeScript source.
+
+## 🧬 Running mutation tests
+
+Mutation testing changes production code in small ways to check that the tests detect regressions.
+Run it with:
+
+```bash
+npm run test:mutation
+```
+
+The current mutation target is the isolated booking validation and request-construction logic in
+`src/ts/booking-utils.ts`. Stryker runs the relevant Vitest tests and writes an HTML score report
+under `reports/mutation/`.
+
+## 🌐 Running end-to-end browser tests
+
+Install dependencies and the Playwright Chromium browser once, then run the full browser suite:
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
+The E2E command builds the HAML, Stylus, and TypeScript sources into `dist/`, starts a local Vite
+server, and runs browser tests against Chromium. The booking API is intercepted in the test, so no
+backend server or live booking submission is needed.
+
 ## 📦 Required Installations & Dependencies
 
 To use this pipeline, your system must have the underlying runtimes installed:

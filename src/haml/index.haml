@@ -1,4 +1,4 @@
-- navigation = [["Home", "#home"], ["Packages", "#packages"], ["Fleet", "#fleet"], ["Destinations", "#destinations"], ["Contact", "#contact"]]
+- navigation = [["Home", "#home"], ["Packages", "#packages"], ["Destinations", "#destinations"], ["Fleet", "#fleet"], ["Contact", "#booking"]]
 - packages = [{ title: "South India 4-Day Tour", image: "assets/tour-coast.jpg", alt: "Temple beside the water at sunset", sedan: "₹18,600", suv: "₹22,800" }, { title: "Ooty 3 Days Tour", image: "assets/tour-hills.jpg", alt: "Rolling green hills in the Western Ghats", sedan: "₹13,800", suv: "₹16,500" }, { title: "Munnar Tea Gardens Tour", image: "assets/tour-tea.jpg", alt: "Lush green tea gardens in the Western Ghats", sedan: "₹10,700", suv: "₹11,900" }]
 - vehicles = [{ name: "Sedan", seats: "4+1", image: "assets/fleet-sedan.jpg", alt: "White sedan available for rental" }, { name: "SUV", seats: "6+1", image: "assets/fleet-suv.jpg", alt: "White SUV available for rental" }, { name: "Tempo", seats: "12+1", image: "assets/fleet-tempo.jpg", alt: "Passenger van available for rental" }, { name: "Urbania", seats: "17+1", image: "assets/fleet-urbania.jpg", alt: "Premium minibus available for rental" }, { name: "Hatchback", seats: "4+1", image: "assets/fleet-hatchback.svg", alt: "Illustration of a compact hatchback car" }, { name: "Premium SUV", seats: "6+1", image: "assets/fleet-premium-suv.svg", alt: "Illustration of a premium sport utility vehicle" }, { name: "Mini Coach", seats: "20+1", image: "assets/fleet-coach.svg", alt: "Illustration of a large passenger mini coach" }]
 - destinations = [{ name: "Chennai", image: "assets/place-chennai.jpg", alt: "Historic temple in Chennai" }, { name: "Pondicherry", image: "assets/place-pondicherry.jpg", alt: "Colonial-era waterfront architecture in Pondicherry" }, { name: "Madurai", image: "assets/place-madurai.jpg", alt: "Temple tower in Madurai" }, { name: "Kanyakumari", image: "assets/place-kanyakumari.jpg", alt: "Statue on the coast at Kanyakumari" }, { name: "Ooty", image: "assets/tour-hills.jpg", alt: "Green hills in the Nilgiri mountains near Ooty" }]
@@ -26,9 +26,9 @@
           - navigation.each do |item|
             %a{ href: item[1], class: item[0] == "Home" ? "is-active" : nil }= item[0]
         .header-contact
-          %a.phone-link{ href: "tel:+919876543210" }
+          %a.phone-link{ href: "tel:+918428558275" }
             %span.phone-icon{ "aria-hidden": "true" } ☎
-            %span +91 98765 43210
+            %span +91 84285 58275
         %details.mobile-menu
           %summary.menu-toggle{ "aria-label": "Open navigation menu" }
             %span
@@ -57,7 +57,7 @@
             %a.button.button-primary{ href: "#packages" }
               %span{ "aria-hidden": "true" } ▣
               View Tour Packages
-            %a.button.button-outline{ href: "#booking" }
+            %a.button.button-outline{ href: "#fleet" }
               %span{ "aria-hidden": "true" } ▱
               Book Custom Cab
 
@@ -75,62 +75,71 @@
           .section-heading
             %h2 Handcrafted Travel Experiences
             %span.heading-rule
-          .tour-grid
-            - packages.each do |package|
-              %article.tour-card
-                %img.card-image{ src: package[:image], alt: package[:alt], loading: "lazy" }
-                .tour-card-body
-                  %h3= package[:title]
-                  .price-row
-                    %span.car-symbol{ "aria-hidden": "true" } ▱
-                    %span Sedan (4+1):
-                    %strong= "#{package[:sedan]} PP"
-                  .price-row
-                    %span.car-symbol{ "aria-hidden": "true" } ▱
-                    %span SUV (7+1):
-                    %strong= "#{package[:suv]} PP"
-                  %a.inclusions-link{ href: "#booking" } View Inclusions / Exclusions
-                  %a.button.button-small.button-outline{ href: "#booking" } Book This Package
+          .carousel-shell{ data: { carousel: true } }
+            %button.carousel-control{ type: "button", data: { carousel_direction: "previous" }, "aria-label": "Scroll packages left" } ‹
+            .tour-grid.carousel-track{ data: { carousel_track: true }, tabindex: "0" }
+              - packages.each do |package|
+                %article.tour-card
+                  %img.card-image{ src: package[:image], alt: package[:alt], loading: "lazy" }
+                  .tour-card-body
+                    %h3= package[:title]
+                    .price-row
+                      %span.car-symbol{ "aria-hidden": "true" } ▱
+                      %span Sedan:
+                      %strong{ "aria-label": "#{package[:sedan]} per person" }= package[:sedan]
+                    .price-row
+                      %span.car-symbol{ "aria-hidden": "true" } ▱
+                      %span SUV:
+                      %strong{ "aria-label": "#{package[:suv]} per person" }= package[:suv]
+                    %a.inclusions-link{ href: "#booking" } Tour Details
+                    %a.button.button-small.button-outline{ href: "#booking" } Book Tour
+            %button.carousel-control{ type: "button", data: { carousel_direction: "next" }, "aria-label": "Scroll packages right" } ›
 
         %section.content-section#destinations
           .section-heading
             %h2 India's Most Loved Places
             %span.heading-rule
-          .destination-grid
-            - destinations.each do |destination|
-              %a.destination-card{ href: "#booking", "aria-label": "Plan a trip to #{destination[:name]}" }
-                %img{ src: destination[:image], alt: destination[:alt], loading: "lazy" }
-                %span= destination[:name]
+          .carousel-shell{ data: { carousel: true } }
+            %button.carousel-control{ type: "button", data: { carousel_direction: "previous" }, "aria-label": "Scroll destinations left" } ‹
+            .destination-grid.carousel-track{ data: { carousel_track: true }, tabindex: "0" }
+              - destinations.each do |destination|
+                %a.destination-card{ href: "#booking", "aria-label": "Plan a trip to #{destination[:name]}", data: { booking_destination: destination[:name].downcase } }
+                  %img{ src: destination[:image], alt: destination[:alt], loading: "lazy" }
+                  %span= destination[:name]
+            %button.carousel-control{ type: "button", data: { carousel_direction: "next" }, "aria-label": "Scroll destinations right" } ›
 
         %section.content-section#fleet
           .section-heading
             %h2 Rent A Car For Your Journey
             %span.heading-rule
-          .fleet-grid
-            - vehicles.each do |vehicle|
-              %article.fleet-card
-                %img{ src: vehicle[:image], alt: vehicle[:alt], loading: "lazy" }
-                %h3= "#{vehicle[:name]} (#{vehicle[:seats]})"
-                %a.button.button-small.button-outline{ href: "#booking" } Rent Now
+          .carousel-shell{ data: { carousel: true } }
+            %button.carousel-control{ type: "button", data: { carousel_direction: "previous" }, "aria-label": "Scroll fleet left" } ‹
+            .fleet-grid.carousel-track{ data: { carousel_track: true }, tabindex: "0" }
+              - vehicles.each do |vehicle|
+                %article.fleet-card
+                  %img{ src: vehicle[:image], alt: vehicle[:alt], loading: "lazy" }
+                  %h3= "#{vehicle[:name]} (#{vehicle[:seats]})"
+                  %a.button.button-small.button-outline{ href: "#booking" } Rent Now
+            %button.carousel-control{ type: "button", data: { carousel_direction: "next" }, "aria-label": "Scroll fleet right" } ›
 
         %section.booking-panel#booking
           .booking-intro
             %h2 Ready to Explore?
-            %p Fill out the form and our travel expert will call you within 2 hours.
-            %p We guarantee the best price and completely hassle free travel.
+            %p A travel expert will call you within 2 hours.
+            %p Best prices and hassle-free travel.
           %form.booking-form{ action: "#", method: "post" }
             .form-field.field-name
               %label.visually-hidden{ for: "full-name" } Full name
               %span.field-icon{ "aria-hidden": "true" } ♙
-              %input#full-name{ name: "name", type: "text", placeholder: "Full Name *", autocomplete: "name", required: true }
+              %input#full-name{ name: "name", type: "text", placeholder: "Name *", autocomplete: "name", required: true }
             .form-field.field-phone
               %label.visually-hidden{ for: "phone-number" } Phone number
               %span.field-icon{ "aria-hidden": "true" } ☎
-              %input#phone-number{ name: "phone", type: "tel", placeholder: "Phone Number *", autocomplete: "tel", required: true }
+              %input#phone-number{ name: "phone", type: "tel", placeholder: "Phone *", autocomplete: "tel", required: true }
             .form-field.field-location
               %label.visually-hidden{ for: "location" } Current location
               %span.field-icon{ "aria-hidden": "true" } ⌖
-              %input#location{ name: "location", type: "text", placeholder: "Current Location", autocomplete: "address-level2" }
+              %input#location{ name: "location", type: "text", placeholder: "Location", autocomplete: "address-level2" }
             .form-field.field-destination
               %label.visually-hidden{ for: "destination" } Select destination
               %select#destination{ name: "destination", required: true }
@@ -141,7 +150,7 @@
             .form-field.field-travelers
               %label.visually-hidden{ for: "travelers" } Number of people travelling
               %span.field-icon{ "aria-hidden": "true" } ♟
-              %input#travelers{ name: "travelers", type: "number", min: "1", placeholder: "No. of People Travelling *", required: true }
+              %input#travelers{ name: "travelers", type: "number", min: "1", placeholder: "Travelers *", required: true }
             .form-field.date-field.field-from-date
               %label.date-label{ for: "from-date" } From Date
               %input#from-date{ name: "from_date", type: "date", required: true }
@@ -153,7 +162,7 @@
               %textarea#special-requests{ name: "special_requests", placeholder: "Special Requests (Optional)", rows: "3" }
             %button.button.button-primary.submit-button{ type: "submit" }
               %span{ "aria-hidden": "true" } ➤
-              Send Booking Request
+              Book
           %p.booking-status{ role: "status", "aria-live": "polite" }
 
         %aside.testimonial
@@ -185,13 +194,21 @@
         .footer-column
           %h2 Destinations
           - destinations.each do |destination|
-            %a{ href: "#destinations" }= destination[:name]
+            %a{ href: "#booking", data: { booking_destination: destination[:name].downcase } }= destination[:name]
         .footer-column.footer-contact
           %h2 Contact Us
-          %a{ href: "tel:+919876543210" } ☎ &nbsp; +91 98765 43210
-          %a{ href: "mailto:info@southindiatravel.com" } ✉ &nbsp; info@southindiatravel.com
-          %span ⌖ &nbsp; Chennai, India
-          %span ◷ &nbsp; Mon - Sat: 9:00 AM - 7:00 PM
+          %a{ href: "tel:+918428558275" }
+            %span.footer-contact-icon{ "aria-hidden": "true" } ☎
+            %span.footer-contact-copy +91 84285 58275
+          %a{ href: "mailto:naren000000000@gmail.com" }
+            %span.footer-contact-icon{ "aria-hidden": "true" } ✉
+            %span.footer-contact-copy naren000000000@gmail.com
+          %span
+            %span.footer-contact-icon{ "aria-hidden": "true" } ⌖
+            %span.footer-contact-copy Madurai, India
+          %span
+            %span.footer-contact-icon{ "aria-hidden": "true" } ◷
+            %span.footer-contact-copy Mon - Sat: 9:00 AM - 7:00 PM
       .footer-bottom
         .page-width
           %span © 2024 South India Travel. All Rights Reserved.
