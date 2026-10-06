@@ -1,8 +1,8 @@
 # ==============================================================================
 # WebAssetBuilder Continuous Integration (CI) Workflow
-# 
-# Compiles HAML, Stylus, and TypeScript assets concurrently across isolated jobs 
-# using the 'WebAssetBuilder' PowerShell module, then merges and validates 
+#
+# Compiles HAML, Stylus, and TypeScript assets concurrently across isolated jobs
+# using the 'WebAssetBuilder' PowerShell module, then merges and validates
 # the final distribution bundle.
 # ==============================================================================
 
@@ -45,7 +45,22 @@ jobs:
       # Ensure the latest stable version of Pester 6 is installed on the runner.
       - name: 📦 Install Pester
         shell: pwsh
-        run: Install-Module Pester -RequiredVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
+        run: Install-Module Pester -Force -SkipPublisherCheck -Scope CurrentUser
+
+      - name: 💎 Setup Ruby (Latest)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 'ruby'
+
+      - name: 🟢 Setup Node.js (Latest)
+        uses: actions/setup-node@v7
+        with:
+          node-version: '*'
+
+      - name: 📦 Install CLI Dependencies
+        run: |
+          gem install haml
+          npm install -g stylus typescript
 
       # Execute Pester test runner script against all unit and integration test suites
       - name: 🧪 Execute Pester Test Suite
