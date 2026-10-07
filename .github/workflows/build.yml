@@ -6,10 +6,6 @@
 # the final distribution bundle.
 # ==============================================================================
 
-# ==============================================================================
-# WebAssetBuilder Continuous Integration (CI) Workflow
-# ==============================================================================
-
 name: CI
 
 on:
@@ -34,8 +30,8 @@ jobs:
   # ----------------------------------------------------------------------------
   test:
     name: 📊 Run Tests & Code Coverage
-    runs-on: windows-latest
-    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       # ==========================================
@@ -133,17 +129,12 @@ jobs:
 
       - name: 📝 Write UT Coverage to Job Summary
         if: always()
-        shell: pwsh
         run: |
-          "### 🧪 App Unit Test Coverage" >> $env:GITHUB_STEP_SUMMARY
-          "" >> $env:GITHUB_STEP_SUMMARY
-          if (Test-Path code-coverage-results.md) {
-              Get-Content code-coverage-results.md >> $env:GITHUB_STEP_SUMMARY
-          } else {
-              "⚠️ Coverage report missing" >> $env:GITHUB_STEP_SUMMARY
-          }
-          "" >> $env:GITHUB_STEP_SUMMARY
-          "---" >> $env:GITHUB_STEP_SUMMARY
+          echo "### 🧪 App Unit Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "⚠️ Coverage report missing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
 
       # ==========================================
       # 4. INTEGRATION TEST REPORTING
@@ -170,17 +161,12 @@ jobs:
 
       - name: 📝 Write IT Coverage to Job Summary
         if: always()
-        shell: pwsh
         run: |
-          "### 🔗 App Integration Test Coverage" >> $env:GITHUB_STEP_SUMMARY
-          "" >> $env:GITHUB_STEP_SUMMARY
-          if (Test-Path code-coverage-results.md) {
-              Get-Content code-coverage-results.md >> $env:GITHUB_STEP_SUMMARY
-          } else {
-              "⚠️ Coverage report missing" >> $env:GITHUB_STEP_SUMMARY
-          }
-          "" >> $env:GITHUB_STEP_SUMMARY
-          "---" >> $env:GITHUB_STEP_SUMMARY
+          echo "### 🔗 App Integration Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "⚠️ Coverage report missing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
 
       # ==========================================
       # 5. COMPONENT TEST REPORTING
@@ -205,17 +191,12 @@ jobs:
 
       - name: 📝 Write Component Coverage to Job Summary
         if: always()
-        shell: pwsh
         run: |
-          "### 🧩 Component Test Coverage" >> $env:GITHUB_STEP_SUMMARY
-          "" >> $env:GITHUB_STEP_SUMMARY
-          if (Test-Path code-coverage-results.md) {
-              Get-Content code-coverage-results.md >> $env:GITHUB_STEP_SUMMARY
-          } else {
-              "⚠️ Coverage report missing" >> $env:GITHUB_STEP_SUMMARY
-          }
-          "" >> $env:GITHUB_STEP_SUMMARY
-          "---" >> $env:GITHUB_STEP_SUMMARY
+          echo "### 🧩 Component Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "⚠️ Coverage report missing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
 
       # ==========================================
       # 6. CONTRACT TEST REPORTING
@@ -240,17 +221,12 @@ jobs:
 
       - name: 📝 Write Contract Coverage to Job Summary
         if: always()
-        shell: pwsh
         run: |
-          "### 🤝 Contract Test Coverage" >> $env:GITHUB_STEP_SUMMARY
-          "" >> $env:GITHUB_STEP_SUMMARY
-          if (Test-Path code-coverage-results.md) {
-              Get-Content code-coverage-results.md >> $env:GITHUB_STEP_SUMMARY
-          } else {
-              "⚠️ Coverage report missing" >> $env:GITHUB_STEP_SUMMARY
-          }
-          "" >> $env:GITHUB_STEP_SUMMARY
-          "---" >> $env:GITHUB_STEP_SUMMARY
+          echo "### 🤝 Contract Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "⚠️ Coverage report missing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
 
       # ==========================================
       # 7. E2E TEST REPORTING
@@ -264,33 +240,31 @@ jobs:
 
       - name: 📝 Write E2E Results to Job Summary
         if: always()
-        shell: pwsh
         run: |
-          "### 🌐 E2E Test Execution" >> $env:GITHUB_STEP_SUMMARY
-          "E2E testing completed. See job annotations for specific failures." >> $env:GITHUB_STEP_SUMMARY
-          "---" >> $env:GITHUB_STEP_SUMMARY
+          echo "### 🌐 E2E Test Execution" >> $GITHUB_STEP_SUMMARY
+          echo "E2E testing completed. See job annotations for specific failures." >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
 
       # ==========================================
       # 8. MUTATION TEST REPORTING
       # ==========================================
       - name: 📝 Write Mutation Report to Summary
         if: always()
-        shell: pwsh
         run: |
-          "### 🧬 Mutation Testing Summary" >> $env:GITHUB_STEP_SUMMARY
-          "" >> $env:GITHUB_STEP_SUMMARY
+          echo "### 🧬 Mutation Testing Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
           # Looks for markdown output from Stryker if configured
-          $reportFile = Get-ChildItem -Path . -Filter "mutation-report.md" -Recurse | Select-Object -First 1
+          REPORT_FILE=$(find . -name "mutation-report.md" | head -n 1)
 
-          if ($reportFile -and (Test-Path $reportFile.FullName)) {
-              Get-Content $reportFile.FullName >> $env:GITHUB_STEP_SUMMARY
-          } else {
-              "⚠️ *Mutation report markdown not found. HTML reports are uploaded as artifacts.*" >> $env:GITHUB_STEP_SUMMARY
-          }
+          if [ -n "$REPORT_FILE" ] && [ -f "$REPORT_FILE" ]; then
+              cat "$REPORT_FILE" >> $GITHUB_STEP_SUMMARY
+          else
+              echo "⚠️ *Mutation report markdown not found. HTML reports are uploaded as artifacts.*" >> $GITHUB_STEP_SUMMARY
+          fi
 
-          "" >> $env:GITHUB_STEP_SUMMARY
-          "---" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
 
       # ==========================================
       # 9. ARTIFACT ARCHIVING
@@ -314,7 +288,7 @@ jobs:
   build-haml:
     name: Build HAML
     needs: test
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
@@ -350,7 +324,7 @@ jobs:
   build-stylus:
     name: Build Stylus
     needs: test
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
@@ -386,7 +360,7 @@ jobs:
   build-ts:
     name: Build TypeScript
     needs: test
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
@@ -425,7 +399,7 @@ jobs:
       - build-haml
       - build-stylus
       - build-ts
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
