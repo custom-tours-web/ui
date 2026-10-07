@@ -159,6 +159,7 @@ PrivateData = @{
         }
         CodeCoverage = @{
             Enabled = $true
+            OutputFormat = 'JaCoCo' # Standard format required by most CI tools
             Path = @('private', 'public') # Restricts coverage scan to module code, ignoring tests
             OutputPath = './TestResults/coverage.xml'
         }

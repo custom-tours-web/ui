@@ -13,8 +13,17 @@ $pesterSettings = $manifestData.PrivateData.Pester
 # Cast the settings into a formal PesterConfiguration object
 $config = [PesterConfiguration]$pesterSettings
 
+$testResultsDir = Join-Path $PSScriptRoot "TestResults\$TestSuite"
+
+# Ensure the output directory exists
+if (-not (Test-Path $testResultsDir)) {
+    New-Item -ItemType Directory -Path $testResultsDir -Force | Out-Null
+}
+
 # Inject dynamic runtime variables that aren't allowed in .psd1 files
 $config.CodeCoverage.ReportRoot = $PSScriptRoot
+$config.CodeCoverage.OutputPath = Join-Path $testResultsDir "coverage.xml"
+$config.TestResult.OutputPath   = Join-Path $testResultsDir "result.xml"
 
 # Run the tests!
 Invoke-Pester -Configuration $config
