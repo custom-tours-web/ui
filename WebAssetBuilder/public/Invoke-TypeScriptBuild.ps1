@@ -80,7 +80,7 @@ function Invoke-TypeScriptBuild {
         Write-Log -Level INFO -Message "🔧 Compiling $srcDir -> $outDir"
 
         # Extract full path strings for each TypeScript file.
-        $tsFilePaths = $tsFiles.FullName
+        $tsFilePaths = @($tsFiles.FullName)
 
         # Execute TypeScript compiler (tsc) targeting output directory and source root.
         $tscOutput = & tsc `
