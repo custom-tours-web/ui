@@ -86,7 +86,7 @@ function Invoke-TypeScriptBuild {
         $tscOutput = & tsc `
             --outDir $outDir `
             --rootDir $srcDir `
-            $tsFilePaths 2>&1
+            @tsFilePaths 2>&1
 
         # Validate execution exit code.
         if ($LASTEXITCODE -ne 0) {
