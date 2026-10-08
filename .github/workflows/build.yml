@@ -93,11 +93,11 @@ jobs:
         continue-on-error: true
 
       - name: 🤝 Execute App Contract Tests
-        run: npm run test:coverage:contract
+        run: npm run test:contract
         continue-on-error: true
 
       - name: 🌐 Execute App E2E Tests
-        run: npm run test:coverage:e2e
+        run: npm run test:e2e
         continue-on-error: true
 
       - name: 🧬 Execute App Mutation Tests
@@ -203,26 +203,6 @@ jobs:
         with:
           check_name: "🤝 Contract Test Results"
           files: "junit-contract.xml"
-
-      - name: 📈 Process Contract Test Coverage
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        if: always()
-        with:
-          filename: "coverage/contract/cobertura-coverage.xml"
-          badge: true
-          format: markdown
-          output: both
-          indicators: true
-          thresholds: '50 75'
-
-      - name: 📝 Write Contract Coverage to Job Summary
-        if: always()
-        run: |
-          echo "### 🤝 Contract Test Coverage" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "⚠️ Coverage report missing" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
 
       # ==========================================
       # 7. E2E TEST REPORTING

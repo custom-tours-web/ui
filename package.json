@@ -3,18 +3,16 @@
   "private": true,
   "scripts": {
     "test": "vitest run",
-    "test:component": "vitest run tests/components",
     "test:contract": "vitest run tests/contract",
-    "test:mutation": "stryker run",
-    "test:coverage": "vitest run --coverage",
-    "test:coverage:integration": "vitest run --config vitest.integration-coverage.config.ts --coverage tests/integration",
-    "test:coverage:contract": "vitest run --config vitest.contract-coverage.config.ts --coverage tests/contract",
-    "test:coverage:component": "vitest run --config vitest.component-coverage.config.ts --coverage tests/components",
-    "test:coverage:e2e": "npm run e2e:build && playwright test --config playwright.coverage.config.ts",
+    "test:component": "vitest run tests/components",
+    "test:integration": "vitest run tests/integration",
     "test:e2e": "npm run e2e:build && playwright test",
     "e2e:build": "node tests/e2e/build.mjs",
-    "test:integration": "vitest run tests/integration",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:component": "vitest run --config vitest.component-coverage.config.ts --coverage tests/components",
+    "test:coverage:integration": "vitest run --config vitest.integration-coverage.config.ts --coverage tests/integration",
+    "test:mutation": "stryker run"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
