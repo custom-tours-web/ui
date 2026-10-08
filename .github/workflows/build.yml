@@ -112,9 +112,7 @@ jobs:
         if: always()
         with:
           check_name: "🧪 Unit Test Results"
-          files: |
-            **/TestResults/Unit/**/result.xml
-            junit-unit.xml
+          files: junit-unit.xml
 
       - name: 📈 Process Unit Test Coverage
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -144,9 +142,7 @@ jobs:
         if: always()
         with:
           check_name: "🔗 Integration Test Results"
-          files: |
-            **/TestResults/Integration/**/result.xml
-            junit-integration.xml
+          files: junit-integration.xml
 
       - name: 📈 Process Integration Test Coverage
         uses: irongut/CodeCoverageSummary@v1.3.0
