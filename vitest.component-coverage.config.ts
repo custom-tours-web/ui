@@ -6,6 +6,9 @@ export default mergeConfig(
   baseConfig,
   defineConfig({
     test: {
+      outputFile: {
+        junit: "junit-component.xml",
+      },
       coverage: {
         include: ["src/ts/navigation.ts"],
         exclude: [
