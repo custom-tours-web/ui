@@ -74,5 +74,6 @@ export default async function generateE2ECoverage() {
   reports.create("html").execute(reportContext);
   reports.create("lcovonly").execute(reportContext);
   reports.create("text").execute(reportContext);
+  reports.create("cobertura").execute(reportContext);
   console.log(`E2E coverage reports written to ${relative(projectRoot, outputDirectory)}.`);
 }
