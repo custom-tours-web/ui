@@ -97,7 +97,7 @@ jobs:
         continue-on-error: true
 
       - name: 🌐 Execute App E2E Tests
-        run: npm run test:e2e
+        run: npm run test:coverage:e2e
         continue-on-error: true
 
       - name: 🧬 Execute App Mutation Tests
@@ -234,11 +234,24 @@ jobs:
           check_name: "🌐 E2E Test Results"
           files: "junit-e2e.xml"
 
-      - name: 📝 Write E2E Results to Job Summary
+      - name: 📈 Process E2E Test Coverage
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        if: always()
+        with:
+          filename: "coverage/e2e/cobertura-coverage.xml"
+          badge: true
+          format: markdown
+          output: both
+          indicators: true
+          thresholds: '50 75'
+
+      - name: 📝 Write E2E Coverage to Job Summary
         if: always()
         run: |
-          echo "### 🌐 E2E Test Execution" >> $GITHUB_STEP_SUMMARY
-          echo "E2E testing completed. See job annotations for specific failures." >> $GITHUB_STEP_SUMMARY
+          echo "### 🌐 E2E Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "⚠️ Coverage report missing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
 
       # ==========================================
