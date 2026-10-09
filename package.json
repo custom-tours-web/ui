@@ -12,6 +12,7 @@
     "test:coverage": "vitest run --coverage",
     "test:coverage:component": "vitest run --config vitest.component-coverage.config.ts --coverage tests/components",
     "test:coverage:integration": "vitest run --config vitest.integration-coverage.config.ts --coverage tests/integration",
+    "test:coverage:contract": "vitest run --config vitest.contract-coverage.config.ts --coverage tests/contract",
     "test:mutation": "stryker run"
   },
   "devDependencies": {
