@@ -111,7 +111,7 @@ jobs:
         if: always()
         with:
           check_name: "🧪 Unit Test Results"
-          files: junit-unit.xml
+          files: coverage/coverage-report.xml
 
       - name: 📈 Process Unit Test Coverage
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -172,7 +172,7 @@ jobs:
         if: always()
         with:
           check_name: "🔗 Integration Test Results"
-          files: junit-integration.xml
+          files: coverage/integration/coverage-report.xml
 
       - name: 📈 Process Integration Test Coverage
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -239,7 +239,7 @@ jobs:
         if: always()
         with:
           check_name: "🧩 Component Test Results"
-          files: "junit-component.xml"
+          files: "coverage/component/coverage-report.xml"
 
       - name: 📈 Process Component Test Coverage
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -266,7 +266,7 @@ jobs:
         if: always()
         with:
           check_name: "🤝 Contract Test Results"
-          files: "junit-contract.xml"
+          files: "coverage/contract/coverage-report.xml"
 
       - name: 📈 Process Contract Test Coverage
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -293,7 +293,7 @@ jobs:
         if: always()
         with:
           check_name: "🌐 E2E Test Results"
-          files: "junit-e2e.xml"
+          files: "coverage/e2e/coverage-report.xml"
 
       - name: 📈 Process E2E Test Coverage
         uses: irongut/CodeCoverageSummary@v1.3.0

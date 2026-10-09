@@ -1,21 +1,11 @@
-import type { BookingRequest } from "./booking-request";
-
-export interface BookingFormValues {
-  fullName: string;
-  phoneNumber: string;
-  currentLocation: string;
-  destination: string;
-  fromDate: string;
-  toDate: string;
-  numberOfMembers: string;
-  specialRequests: string;
-}
+import { BookingForm } from "./booking-form"
+import type { BookingRequest } from "./booking-request"
 
 export function isBookingDateRangeValid(fromDate: string, toDate: string): boolean {
-  return toDate >= fromDate;
+  return toDate >= fromDate
 }
 
-export function createBookingRequest(values: BookingFormValues): BookingRequest {
+export function createBookingRequest(values: BookingForm): BookingRequest {
   return {
     fullName: values.fullName.trim(),
     phoneNumber: values.phoneNumber.trim(),
@@ -25,5 +15,5 @@ export function createBookingRequest(values: BookingFormValues): BookingRequest 
     toDate: values.toDate,
     numberOfMembers: Number(values.numberOfMembers),
     specialRequests: values.specialRequests.trim(),
-  };
+  }
 }

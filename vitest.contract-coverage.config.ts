@@ -1,19 +1,22 @@
-import { mergeConfig } from "vite";
-import { defineConfig } from "vitest/config";
-import baseConfig from "./vitest.config";
+import { mergeConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
+import baseConfig from './vitest.config'
+
+const sourceDir : string = 'src/ts/'
+const outputDir : string = 'coverage/contract/'
 
 export default mergeConfig(
   baseConfig,
   defineConfig({
     test: {
       outputFile: {
-        junit: "junit-contract.xml",
+        junit: `${outputDir}coverage-report.xml`,
       },
       coverage: {
-        include: ["src/ts/booking.ts", "src/ts/booking-utils.ts"],
-        exclude: ["src/ts/navigation.ts"],
-        reportsDirectory: "coverage/contract",
+        include: [`${sourceDir}booking.ts`, `${sourceDir}booking-utils.ts`],
+        exclude: [`${sourceDir}navigation.ts`],
+        reportsDirectory: outputDir,
       },
     },
   }),
-);
+)
