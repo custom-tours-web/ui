@@ -262,13 +262,37 @@ jobs:
           echo "### 🧬 Mutation Testing Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Looks for markdown output from Stryker if configured
-          REPORT_FILE=$(find . -name "mutation-report.md" | head -n 1)
+          if [ -f "reports/mutation/mutation.json" ]; then
+            node -e "
+              const fs = require('fs');
+              const report = JSON.parse(fs.readFileSync('reports/mutation/mutation.json', 'utf8'));
+              let total = 0, killed = 0, survived = 0, timeout = 0, noCoverage = 0;
 
-          if [ -n "$REPORT_FILE" ] && [ -f "$REPORT_FILE" ]; then
-              cat "$REPORT_FILE" >> $GITHUB_STEP_SUMMARY
+              Object.values(report.files).forEach(file => {
+                file.mutants.forEach(m => {
+                  total++;
+                  if (m.status === 'Killed') killed++;
+                  if (m.status === 'Survived') survived++;
+                  if (m.status === 'Timeout') timeout++;
+                  if (m.status === 'NoCoverage') noCoverage++;
+                });
+              });
+
+              const validTotal = total - noCoverage;
+              const score = validTotal > 0 ? ((killed + timeout) / validTotal * 100).toFixed(2) : '0.00';
+
+              console.log('**Mutation Score:** ' + score + '%');
+              console.log('');
+              console.log('| Metric | Count |');
+              console.log('|--------|-------|');
+              console.log('| 👽 Total Mutants | ' + total + ' |');
+              console.log('| 💀 Killed | ' + killed + ' |');
+              console.log('| 🏃 Survived | ' + survived + ' |');
+              console.log('| ⏱️ Timeout | ' + timeout + ' |');
+              console.log('| 🙈 No Coverage | ' + noCoverage + ' |');
+            " >> $GITHUB_STEP_SUMMARY
           else
-              echo "⚠️ *Mutation report markdown not found. HTML reports are uploaded as artifacts.*" >> $GITHUB_STEP_SUMMARY
+              echo "⚠️ *Mutation report JSON not found. Check if the json reporter is enabled.*" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
