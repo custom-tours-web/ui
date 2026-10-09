@@ -5,7 +5,7 @@
   "commandRunner": {
     "command": "npm test"
   },
-  "reporters": ["clear-text", "progress", "progress-append-only", "dots", "event-recorder", "html", "json"],
+  "reporters": ["clear-text", "progress-append-only", "dots", "event-recorder", "html", "json"],
   "coverageAnalysis": "all",
   "logLevel": "trace",
   "dashboard": {
