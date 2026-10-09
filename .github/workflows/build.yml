@@ -143,7 +143,7 @@ jobs:
           "" | Out-File -Append $summaryFile
 
           # Path from the Pester logs
-          $covPath = "TestResults/unit-coverage.xml"
+          $covPath = "TestResults/Unit/coverage-report.xml"
 
           if (Test-Path $covPath) {
               [xml]$xml = Get-Content $covPath
@@ -210,7 +210,7 @@ jobs:
           "" | Out-File -Append $summaryFile
 
           # Path from the Pester integration logs
-          $covPath = "TestResults/integration-coverage.xml"
+          $covPath = "TestResults/Integration/coverage-report.xml"
 
           if (Test-Path $covPath) {
               [xml]$xml = Get-Content $covPath

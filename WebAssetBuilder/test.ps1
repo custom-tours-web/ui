@@ -23,9 +23,9 @@ if (-not (Test-Path $testResultsDir)) {
 # Inject dynamic runtime variables that aren't allowed in .psd1 files
 $config.CodeCoverage.ReportRoot = $PSScriptRoot
 if ($TestSuite -eq 'Unit') {
-    $config.CodeCoverage.OutputPath = Join-Path $testResultsDir "unit-coverage.xml"
+    $config.CodeCoverage.OutputPath = Join-Path $testResultsDir "coverage-report.xml"
 } elseif ($TestSuite -eq 'Integration') {
-    $config.CodeCoverage.OutputPath = Join-Path $testResultsDir "integration-coverage.xml"
+    $config.CodeCoverage.OutputPath = Join-Path $testResultsDir "coverage-report.xml"
 }
 $config.TestResult.OutputPath   = Join-Path $testResultsDir "result.xml"
 
