@@ -143,7 +143,7 @@ jobs:
           "" | Out-File -Append $summaryFile
 
           # Path from the Pester logs
-          $covPath = "TestResults/coverage.xml"
+          $covPath = "TestResults/unit-coverage.xml"
 
           if (Test-Path $covPath) {
               [xml]$xml = Get-Content $covPath
@@ -193,6 +193,46 @@ jobs:
           cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "⚠️ Coverage report missing" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🔗 Execute Pester Integration Tests
+        shell: pwsh
+        working-directory: ./WebAssetBuilder/
+        run: ./test.ps1 -TestSuite Integration
+        continue-on-error: true
+
+      - name: 📝 Write Pester Integration Coverage to Job Summary
+        if: always()
+        shell: pwsh
+        working-directory: ./WebAssetBuilder/
+        run: |
+          $summaryFile = $env:GITHUB_STEP_SUMMARY
+          "### 🔗 Pester Integration Test Coverage" | Out-File -Append $summaryFile
+          "" | Out-File -Append $summaryFile
+
+          # Path from the Pester integration logs
+          $covPath = "TestResults/integration-coverage.xml"
+
+          if (Test-Path $covPath) {
+              [xml]$xml = Get-Content $covPath
+
+              "| Metric | Covered | Missed | Total | Coverage % |" | Out-File -Append $summaryFile
+              "|--------|---------|--------|-------|------------|" | Out-File -Append $summaryFile
+
+              foreach ($counter in $xml.report.counter) {
+                  $type = $counter.type
+                  $covered = [int]$counter.covered
+                  $missed = [int]$counter.missed
+                  $total = $covered + $missed
+                  $percent = if ($total -gt 0) { "{0:N2}%" -f (($covered / $total) * 100) } else { "0.00%" }
+
+                  "| **$type** | $covered | $missed | $total | $percent |" | Out-File -Append $summaryFile
+              }
+          } else {
+              "⚠️ *Pester integration coverage report ($covPath) not found.*" | Out-File -Append $summaryFile
+          }
+
+          "" | Out-File -Append $summaryFile
+          "---" | Out-File -Append $summaryFile
 
       - name: 📋 Publish Component Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
