@@ -155,13 +155,11 @@ PrivateData = @{
         TestResult = @{
             Enabled = $true
             OutputFormat = 'NUnitXml'   # Standard format required by most CI tools
-            OutputPath = './TestResults/result.xml'
         }
         CodeCoverage = @{
             Enabled = $true
             OutputFormat = 'JaCoCo' # Standard format required by most CI tools
             Path = @('private', 'public') # Restricts coverage scan to module code, ignoring tests
-            OutputPath = './TestResults/coverage.xml'
         }
         Should = @{
             ErrorAction = 'Continue'

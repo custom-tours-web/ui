@@ -1,3 +1,8 @@
+param (
+    [ValidateSet('Unit', 'Integration')]
+    [string]$TestSuite = 'Unit'
+)
+
 Import-Module Pester
 
 $ErrorActionPreference = 'Stop'
@@ -13,7 +18,7 @@ $pesterSettings = $manifestData.PrivateData.Pester
 # Cast the settings into a formal PesterConfiguration object
 $config = [PesterConfiguration]$pesterSettings
 
-$testResultsDir = Join-Path $PSScriptRoot "TestResults\$TestSuite"
+$testResultsDir = Join-Path $PSScriptRoot "TestResults\$TestSuite\"
 
 # Ensure the output directory exists
 if (-not (Test-Path $testResultsDir)) {
