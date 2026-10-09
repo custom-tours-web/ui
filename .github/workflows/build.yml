@@ -259,29 +259,39 @@ jobs:
       - name: 📝 Write Mutation Report to Summary
         if: always()
         run: |
-          echo "### 🧬 Mutation Testing Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
           if [ -f "reports/mutation/mutation.json" ]; then
             node -e "
               const fs = require('fs');
               const report = JSON.parse(fs.readFileSync('reports/mutation/mutation.json', 'utf8'));
               let total = 0, killed = 0, survived = 0, timeout = 0, noCoverage = 0;
 
-              Object.values(report.files).forEach(file => {
-                file.mutants.forEach(m => {
-                  total++;
-                  if (m.status === 'Killed') killed++;
-                  if (m.status === 'Survived') survived++;
-                  if (m.status === 'Timeout') timeout++;
-                  if (m.status === 'NoCoverage') noCoverage++;
+              let fileRows = [];
+
+              Object.entries(report.files).forEach(([filePath, fileData]) => {
+                let fTotal = 0, fKilled = 0, fSurvived = 0, fTimeout = 0, fNoCoverage = 0;
+
+                fileData.mutants.forEach(m => {
+                  fTotal++; total++;
+                  if (m.status === 'Killed') { fKilled++; killed++; }
+                  if (m.status === 'Survived') { fSurvived++; survived++; }
+                  if (m.status === 'Timeout') { fTimeout++; timeout++; }
+                  if (m.status === 'NoCoverage') { fNoCoverage++; noCoverage++; }
                 });
+
+                const fValidTotal = fTotal - fNoCoverage;
+                const fScore = fValidTotal > 0 ? ((fKilled + fTimeout) / fValidTotal * 100).toFixed(2) : '0.00';
+
+                // Extract just the file name to keep the table clean
+                const fileName = filePath.split('/').pop();
+
+                fileRows.push('| ' + fileName + ' | ' + fScore + '% | ' + fTotal + ' | ' + fKilled + ' | ' + fSurvived + ' | ' + fTimeout + ' | ' + fNoCoverage + ' |');
               });
 
               const validTotal = total - noCoverage;
               const score = validTotal > 0 ? ((killed + timeout) / validTotal * 100).toFixed(2) : '0.00';
 
-              console.log('**Mutation Score:** ' + score + '%');
+              console.log('### 🧬 Mutation Testing Summary');
+              console.log('**Overall Mutation Score:** ' + score + '%');
               console.log('');
               console.log('| Metric | Count |');
               console.log('|--------|-------|');
@@ -290,6 +300,12 @@ jobs:
               console.log('| 🏃 Survived | ' + survived + ' |');
               console.log('| ⏱️ Timeout | ' + timeout + ' |');
               console.log('| 🙈 No Coverage | ' + noCoverage + ' |');
+              console.log('');
+
+              console.log('### 📄 Per-File Breakdown');
+              console.log('| File | Score | Total | Killed | Survived | Timeout | No Cov |');
+              console.log('|------|-------|-------|--------|----------|---------|--------|');
+              fileRows.forEach(row => console.log(row));
             " >> $GITHUB_STEP_SUMMARY
           else
               echo "⚠️ *Mutation report JSON not found. Check if the json reporter is enabled.*" >> $GITHUB_STEP_SUMMARY
