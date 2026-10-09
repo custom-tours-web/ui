@@ -133,6 +133,40 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
 
+      - name: 📝 Write Pester Coverage to Job Summary
+        if: always()
+        shell: pwsh
+        working-directory: ./WebAssetBuilder/
+        run: |
+          $summaryFile = $env:GITHUB_STEP_SUMMARY
+          "### 🐚 Pester Unit Test Coverage" | Out-File -Append $summaryFile
+          "" | Out-File -Append $summaryFile
+
+          # Path from the Pester logs
+          $covPath = "TestResults/coverage.xml"
+
+          if (Test-Path $covPath) {
+              [xml]$xml = Get-Content $covPath
+
+              "| Metric | Covered | Missed | Total | Coverage % |" | Out-File -Append $summaryFile
+              "|--------|---------|--------|-------|------------|" | Out-File -Append $summaryFile
+
+              foreach ($counter in $xml.report.counter) {
+                  $type = $counter.type
+                  $covered = [int]$counter.covered
+                  $missed = [int]$counter.missed
+                  $total = $covered + $missed
+                  $percent = if ($total -gt 0) { "{0:N2}%" -f (($covered / $total) * 100) } else { "0.00%" }
+
+                  "| **$type** | $covered | $missed | $total | $percent |" | Out-File -Append $summaryFile
+              }
+          } else {
+              "⚠️ *Pester coverage report ($covPath) not found.*" | Out-File -Append $summaryFile
+          }
+
+          "" | Out-File -Append $summaryFile
+          "---" | Out-File -Append $summaryFile
+
       - name: 📋 Publish Integration Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
