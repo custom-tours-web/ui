@@ -8,7 +8,7 @@ import libReport from "istanbul-lib-report"
 const projectRoot = process.cwd()
 const browserScriptDirectory = resolve(projectRoot, "dist/js")
 const outputDirectory = resolve(projectRoot, "coverage/e2e")
-const rawCoverageDirectory = resolve(projectRoot, outputDirectory)
+const rawCoverageDirectory = resolve(projectRoot, "test-results")
 
 async function findCoverageFiles(directory) {
   let files = []
