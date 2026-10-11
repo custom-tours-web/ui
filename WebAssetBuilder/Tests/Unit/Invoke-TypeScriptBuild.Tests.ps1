@@ -20,11 +20,11 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
     # ----------------------------------------------------------------------
     It 'Should throw an error if the project root cannot be determined' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "tsc" } -ModuleName 'WebAssetBuilder'
-        
+
         # Simulate the helper function failing to locate a root
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-TypeScriptBuild -StartPath $fakePath } | 
+        { Invoke-TypeScriptBuild -StartPath $fakePath } |
             Should-Throw 'Project root could not be determined.'
     }
 
@@ -34,11 +34,11 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
     It 'Should throw an error if the source directory does not exist' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "tsc" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
-        
+
         # Simulate the source directory missing from the file system
         Mock Test-Path { return $false } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-TypeScriptBuild -StartPath $fakePath } | 
+        { Invoke-TypeScriptBuild -StartPath $fakePath } |
             Should-Throw "TypeScript source directory not found: $fakeSrcDir"
     }
 
@@ -49,11 +49,11 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "tsc" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
         Mock Test-Path { return $true } -ModuleName 'WebAssetBuilder'
-        
+
         # Simulate finding zero .ts files in the directory
         Mock Get-ChildItem { return @() } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-TypeScriptBuild -StartPath $fakePath } | 
+        { Invoke-TypeScriptBuild -StartPath $fakePath } |
             Should-Throw "No TypeScript files found in: $fakeSrcDir"
     }
 
@@ -65,7 +65,7 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
         Mock Test-Path { return $true } -ModuleName 'WebAssetBuilder'
         Mock New-Item {} -ModuleName 'WebAssetBuilder'
-        
+
         $fakeFile = [PSCustomObject]@{ FullName = (Join-Path $fakeSrcDir "app.ts") }
         Mock Get-ChildItem { return @($fakeFile) } -ModuleName 'WebAssetBuilder'
 

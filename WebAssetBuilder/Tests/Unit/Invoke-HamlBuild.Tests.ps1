@@ -20,10 +20,10 @@ Describe 'Invoke-HamlBuild Unit Tests' {
     # ----------------------------------------------------------------------
     It 'Should throw an error if the project root cannot be determined' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "haml" } -ModuleName 'WebAssetBuilder'
-        
+
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-HamlBuild -StartPath $fakePath } | 
+        { Invoke-HamlBuild -StartPath $fakePath } |
             Should-Throw 'Project root could not be determined.'
     }
 
@@ -33,10 +33,10 @@ Describe 'Invoke-HamlBuild Unit Tests' {
     It 'Should throw an error if the source directory does not exist' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "haml" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
-        
+
         Mock Test-Path { return $false } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-HamlBuild -StartPath $fakePath } | 
+        { Invoke-HamlBuild -StartPath $fakePath } |
             Should-Throw "HAML source directory not found: $fakeSrcDir"
     }
 
@@ -47,11 +47,11 @@ Describe 'Invoke-HamlBuild Unit Tests' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "haml" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
         Mock Test-Path { return ($Path -notmatch '[\\/]assets$') } -ModuleName 'WebAssetBuilder'
-        
+
         # Simulate finding zero .haml files in the directory
         Mock Get-ChildItem { return @() } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-HamlBuild -StartPath $fakePath } | 
+        { Invoke-HamlBuild -StartPath $fakePath } |
             Should-Throw "No HAML files found in: $fakeSrcDir"
     }
 
@@ -66,9 +66,9 @@ Describe 'Invoke-HamlBuild Unit Tests' {
         Mock Set-Content {} -ModuleName 'WebAssetBuilder' # Ensure file system remains untouched
         Mock Copy-Item {} -ModuleName 'WebAssetBuilder' # Static assets are covered by integration tests
 
-        $fakeFile = [PSCustomObject]@{ 
+        $fakeFile = [PSCustomObject]@{
             FullName = (Join-Path $fakeSrcDir "index.haml")
-            Name = "index.haml" 
+            Name = "index.haml"
         }
         Mock Get-ChildItem { return @($fakeFile) } -ModuleName 'WebAssetBuilder'
 

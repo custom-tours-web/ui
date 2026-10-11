@@ -17,7 +17,7 @@
 # ==============================================================================
 # ⚙️ Scripts
 # ==============================================================================
-# Scripts MUST use LF to execute properly on macOS/Linux. 
+# Scripts MUST use LF to execute properly on macOS/Linux.
 # This strictly prevents Windows git clients from altering them.
 *.ps1  text eol=lf
 *.sh   text eol=lf
@@ -32,7 +32,7 @@
 # ==============================================================================
 # 🖼️ Binary Assets
 # ==============================================================================
-# Treat images, fonts, and icons as binaries so Git doesn't try to diff 
+# Treat images, fonts, and icons as binaries so Git doesn't try to diff
 # or change their line endings, which corrupts the files.
 *.png   binary
 *.jpg   binary
@@ -48,6 +48,6 @@
 # ==============================================================================
 # 📊 GitHub Repository Stats (Linguist)
 # ==============================================================================
-# If you ever decide to track generated files (which you currently ignore), 
+# If you ever decide to track generated files (which you currently ignore),
 # you can tell GitHub to ignore them in your repository's language statistics:
 # dist/* linguist-generated=true

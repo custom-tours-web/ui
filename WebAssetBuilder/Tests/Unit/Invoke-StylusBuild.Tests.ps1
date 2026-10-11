@@ -20,11 +20,11 @@ Describe 'Invoke-StylusBuild Unit Tests' {
     # ----------------------------------------------------------------------
     It 'Should throw an error if the project root cannot be determined' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "stylus" } -ModuleName 'WebAssetBuilder'
-        
+
         # Simulate the helper function failing to locate a root
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-StylusBuild -StartPath $fakePath } | 
+        { Invoke-StylusBuild -StartPath $fakePath } |
             Should-Throw 'Project root could not be determined.'
     }
 
@@ -34,11 +34,11 @@ Describe 'Invoke-StylusBuild Unit Tests' {
     It 'Should throw an error if the source directory does not exist' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "stylus" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
-        
+
         # Simulate the source directory missing from the file system
         Mock Test-Path { return $false } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-StylusBuild -StartPath $fakePath } | 
+        { Invoke-StylusBuild -StartPath $fakePath } |
             Should-Throw "Stylus source directory not found: $fakeSrcDir"
     }
 
@@ -49,11 +49,11 @@ Describe 'Invoke-StylusBuild Unit Tests' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "stylus" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
         Mock Test-Path { return $true } -ModuleName 'WebAssetBuilder'
-        
+
         # Simulate finding zero .styl files in the directory
         Mock Get-ChildItem { return @() } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-StylusBuild -StartPath $fakePath } | 
+        { Invoke-StylusBuild -StartPath $fakePath } |
             Should-Throw "No Stylus files found in: $fakeSrcDir"
     }
 
@@ -65,7 +65,7 @@ Describe 'Invoke-StylusBuild Unit Tests' {
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
         Mock Test-Path { return $true } -ModuleName 'WebAssetBuilder'
         Mock New-Item {} -ModuleName 'WebAssetBuilder'
-        
+
         $fakeFile = [PSCustomObject]@{ FullName = (Join-Path $fakeSrcDir "app.styl") }
         Mock Get-ChildItem { return @($fakeFile) } -ModuleName 'WebAssetBuilder'
 

@@ -4,11 +4,11 @@ BeforeAll {
 
 # Step inside the module's scope to access private/internal functions
 InModuleScope 'WebAssetBuilder' {
-    
+
     Describe 'Find-ProjectRoot Unit Tests' {
-        
+
         BeforeEach {
-            # Mock Write-Log to prevent console spam 
+            # Mock Write-Log to prevent console spam
             Mock Write-Log {}
 
             # Set up a temporary nested directory structure using Pester's TestDrive
@@ -31,7 +31,7 @@ InModuleScope 'WebAssetBuilder' {
         # ----------------------------------------------------------------------
         It 'Should return $null if the StartPath does not exist' {
             $invalidPath = Join-Path $TestDrive "DoesNotExist"
-            
+
             $result = Find-ProjectRoot -StartPath $invalidPath
             $result | Should-BeNull
         }

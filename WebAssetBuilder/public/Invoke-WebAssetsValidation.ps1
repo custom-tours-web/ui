@@ -3,8 +3,8 @@
     Validates the output of compiled web assets within the distribution directory.
 
 .DESCRIPTION
-    Locates the project root, verifies the existence of the 'dist' directory, and confirms 
-    that HTML, CSS, and JavaScript files exist in the output folder. Logs asset counts 
+    Locates the project root, verifies the existence of the 'dist' directory, and confirms
+    that HTML, CSS, and JavaScript files exist in the output folder. Logs asset counts
     and prints the path of every assembled file.
 
 .PARAMETER StartPath
