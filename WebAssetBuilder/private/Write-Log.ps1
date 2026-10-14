@@ -3,8 +3,8 @@
     Writes formatted, color-coded log messages to the console.
 
 .DESCRIPTION
-    Standardizes output messages across build scripts by attaching a precise timestamp, 
-    timezone ID, and severe level tag. Renders text in distinct foreground colors based on log severity.
+    Standardizes output messages across build scripts by attaching a precise timestamp,
+    timezone ID, & severe level tag. Renders text in distinct foreground colors based on log severity.
 
 .PARAMETER Level
     The log severity level. Accepts: 'INFO', 'SUCCESS', 'WARNING', 'ERROR', or 'HEADER'.
@@ -43,7 +43,7 @@ function Write-Log {
             "HEADER"  = "Magenta"
         }
 
-        # Capture current time (ISO 8601 offset format) and the local time zone identifier.
+        # Capture current time (ISO 8601 offset format) & the local time zone identifier.
         $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss zzz"
         $timezone  = (Get-TimeZone).Id
 

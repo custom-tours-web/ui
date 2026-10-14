@@ -3,8 +3,8 @@
     Compiles HAML template files into HTML documents.
 
 .DESCRIPTION
-    Searches for HAML templates within the project's source directory and compiles them 
-    to HTML in the output folder using the external 'haml' Ruby CLI tool. Maintains 
+    Searches for HAML templates within the project's source directory & compiles them
+    to HTML in the output folder using the external 'haml' Ruby CLI tool. Maintains
     relative folder structures for nested templates.
 
 .PARAMETER StartPath
@@ -62,7 +62,7 @@ function Invoke-HamlBuild {
             throw "Project root could not be determined."
         }
 
-        # Resolve absolute paths for source and output directories.
+        # Resolve absolute paths for source & output directories.
         $srcDir = Join-Path $rootDir $SourceSubDir
         $outDir = Join-Path $rootDir $OutputSubDir
 
@@ -109,7 +109,7 @@ function Invoke-HamlBuild {
 
             Write-Log -Level INFO -Message "   Compiling $($file.Name)..."
 
-            # Invoke external HAML CLI tool and capture stdout/stderr output.
+            # Invoke external HAML CLI tool & capture stdout/stderr output.
             $hamlOutput = & haml $file.FullName 2>&1
 
             # Validate execution exit code.
@@ -124,7 +124,7 @@ function Invoke-HamlBuild {
         Write-Log -Level SUCCESS -Message "✅ HAML build completed successfully."
     }
     catch {
-        # Log error details and re-throw exception.
+        # Log error details & re-throw exception.
         Write-Log -Level ERROR -Message "❌ HAML build failed: $($_.Exception.Message)"
         throw
     }

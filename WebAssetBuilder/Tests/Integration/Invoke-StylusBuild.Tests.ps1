@@ -18,9 +18,7 @@ Describe 'Invoke-StylusBuild Integration Tests' {
         Get-ChildItem -Path $TestDrive -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 1: Invalid Project Root
-    # ----------------------------------------------------------------------
+    # Invalid Project Root
     It 'Should throw an error when the project root cannot be determined' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'stylus' }
 
@@ -31,9 +29,7 @@ Describe 'Invoke-StylusBuild Integration Tests' {
             Should-Throw 'Project root could not be determined.'
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 2: Missing Source Directory
-    # ----------------------------------------------------------------------
+    # Missing Source Directory
     It 'Should throw an error when the Stylus source directory does not exist' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'stylus' }
 
@@ -42,9 +38,7 @@ Describe 'Invoke-StylusBuild Integration Tests' {
             Should-Throw "Stylus source directory not found:*"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 3: No Stylus Files Found
-    # ----------------------------------------------------------------------
+    # No Stylus Files Found
     It 'Should throw an error when the source directory is empty' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'stylus' }
 
@@ -56,9 +50,7 @@ Describe 'Invoke-StylusBuild Integration Tests' {
             Should-Throw "No Stylus files found in:*"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 4: The Happy Path
-    # ----------------------------------------------------------------------
+    # The Happy Path
     It 'Should compile Stylus files to CSS successfully' -Skip:(-not (Get-Command 'stylus' -ErrorAction SilentlyContinue)) {
         $stylSrcDir = Join-Path $script:tempRoot "src/styl"
         New-Item -ItemType Directory -Path $stylSrcDir -Force | Out-Null

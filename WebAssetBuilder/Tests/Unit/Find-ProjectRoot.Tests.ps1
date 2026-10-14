@@ -26,9 +26,7 @@ InModuleScope 'WebAssetBuilder' {
             Get-ChildItem -Path $TestDrive -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
         }
 
-        # ----------------------------------------------------------------------
-        # SCENARIO 1: Invalid Starting Path
-        # ----------------------------------------------------------------------
+        # Invalid Starting Path
         It 'Should return $null if the StartPath does not exist' {
             $invalidPath = Join-Path $TestDrive "DoesNotExist"
 
@@ -36,25 +34,19 @@ InModuleScope 'WebAssetBuilder' {
             $result | Should-BeNull
         }
 
-        # ----------------------------------------------------------------------
-        # SCENARIO 2: Starting at the Root
-        # ----------------------------------------------------------------------
+        # Starting at the Root
         It 'Should return the exact directory when starting directly in the project root' {
             $result = Find-ProjectRoot -StartPath $projectRoot
             $result | Should-Be $projectRoot
         }
 
-        # ----------------------------------------------------------------------
-        # SCENARIO 3: Recursive Traversal (The Core Logic)
-        # ----------------------------------------------------------------------
-        It 'Should traverse upward and find the project root when starting in a deeply nested folder' {
+        # Recursive Traversal (The Core Logic)
+        It 'Should traverse upward & find the project root when starting in a deeply nested folder' {
             $result = Find-ProjectRoot -StartPath $nestedDir
             $result | Should-Be $projectRoot
         }
 
-        # ----------------------------------------------------------------------
-        # SCENARIO 4: Missing 'src' Directory
-        # ----------------------------------------------------------------------
+        # Missing 'src' Directory
         It 'Should return $null if it traverses to the filesystem root without finding a src folder' {
             $noSrcDir = Join-Path $TestDrive "OtherFolder/Deep"
             New-Item -ItemType Directory -Path $noSrcDir -Force | Out-Null

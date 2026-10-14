@@ -18,9 +18,7 @@ Describe 'Invoke-HamlBuild Integration Tests' {
         Get-ChildItem -Path $TestDrive -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 1: Invalid Project Root
-    # ----------------------------------------------------------------------
+    # Invalid Project Root
     It 'Should throw an error when the project root cannot be determined' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'haml' }
 
@@ -31,9 +29,7 @@ Describe 'Invoke-HamlBuild Integration Tests' {
             Should-Throw 'Project root could not be determined.'
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 2: Missing Source Directory
-    # ----------------------------------------------------------------------
+    # Missing Source Directory
     It 'Should throw an error when the HAML source directory does not exist' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'haml' }
 
@@ -42,9 +38,7 @@ Describe 'Invoke-HamlBuild Integration Tests' {
             Should-Throw "HAML source directory not found:*"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 3: No HAML Files Found
-    # ----------------------------------------------------------------------
+    # No HAML Files Found
     It 'Should throw an error when the source directory is empty' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'haml' }
 
@@ -56,14 +50,12 @@ Describe 'Invoke-HamlBuild Integration Tests' {
             Should-Throw "No HAML files found in:*"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 4: The Happy Path
-    # ----------------------------------------------------------------------
-    It 'Should compile HAML files to HTML successfully and preserve relative structures' -Skip:(-not (Get-Command 'haml' -ErrorAction SilentlyContinue)) {
+    # The Happy Path
+    It 'Should compile HAML files to HTML successfully & preserve relative structures' -Skip:(-not (Get-Command 'haml' -ErrorAction SilentlyContinue)) {
         $hamlSrcDir = Join-Path $script:tempRoot "src/haml"
         New-Item -ItemType Directory -Path $hamlSrcDir -Force | Out-Null
 
-        # Create a root file and a nested file to verify relative path structures.
+        # Create a root file & a nested file to verify relative path structures.
         $validRootFile = Join-Path $hamlSrcDir "test.haml"
         Set-Content -Path $validRootFile -Value "%h1 Root"
         $assetsDir = Join-Path $script:tempRoot "src/assets"

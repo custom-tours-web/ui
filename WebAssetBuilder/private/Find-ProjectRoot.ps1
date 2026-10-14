@@ -3,7 +3,7 @@
     Traverses upward from a given directory to locate the project root containing a 'src' folder.
 
 .DESCRIPTION
-    Recursively inspects parent directories starting from a specified path to find a project root directory containing a 'src' subfolder. Utilizes 'Write-Log' for status output and returns the absolute directory path.
+    Recursively inspects parent directories starting from a specified path to find a project root directory containing a 'src' subfolder. Utilizes 'Write-Log' for status output & returns the absolute directory path.
 
 .PARAMETER StartPath
     The directory path from which to begin searching upward for the project root.
@@ -25,7 +25,7 @@ function Find-ProjectRoot {
     )
 
     try {
-        # Validate that the starting path exists and is a valid directory.
+        # Validate that the starting path exists & is a valid directory.
         if (-not (Test-Path $StartPath -PathType Container)) {
             throw [System.IO.DirectoryNotFoundException]::new("Start path does not exist: $StartPath")
         }
@@ -40,7 +40,7 @@ function Find-ProjectRoot {
             # Construct path to potential 'src' directory.
             $srcDir = Join-Path $currentDir.FullName "src"
 
-            # If 'src' subfolder exists, log success and return project root path.
+            # If 'src' subfolder exists, log success & return project root path.
             if (Test-Path $srcDir -PathType Container) {
                 Write-Log -Level SUCCESS -Message "📁 Project root found: $($currentDir.FullName)"
                 return $currentDir.FullName
@@ -54,7 +54,7 @@ function Find-ProjectRoot {
         throw [System.Exception]::new("No 'src' directory found in any parent of $StartPath.")
     }
     catch {
-        # Capture, log error via Write-Log, and return $null.
+        # Capture, log error via Write-Log, & return $null.
         Write-Log -Level ERROR -Message "❌ Error in Find-Root: $($_.Exception.Message)"
         return $null
     }

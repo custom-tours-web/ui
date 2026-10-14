@@ -3,7 +3,7 @@
     Compiles Stylus template files into standard CSS stylesheets.
 
 .DESCRIPTION
-    Locates the project root directory and compiles all Stylus (.styl) files 
+    Locates the project root directory & compiles all Stylus (.styl) files
     found in the source directory into CSS using the external 'stylus' CLI tool.
 
 .PARAMETER StartPath
@@ -54,7 +54,7 @@ function Invoke-StylusBuild {
             throw "Project root could not be determined."
         }
 
-        # Resolve absolute paths for source and output directories.
+        # Resolve absolute paths for source & output directories.
         $srcDir = Join-Path $rootDir $SourceSubDir
         $outDir = Join-Path $rootDir $OutputSubDir
 
@@ -90,7 +90,7 @@ function Invoke-StylusBuild {
         Write-Log -Level SUCCESS -Message "✅ Stylus build completed successfully."
     }
     catch {
-        # Log error details and re-throw exception.
+        # Log error details & re-throw exception.
         Write-Log -Level ERROR -Message "❌ Stylus build failed: $($_.Exception.Message)"
         throw
     }

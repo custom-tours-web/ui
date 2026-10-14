@@ -5,19 +5,17 @@ BeforeAll {
 
 Describe 'Invoke-TypeScriptBuild Unit Tests' {
 
+    # Set up cross-platform friendly fake paths using TestDrive
+    $fakePath    = Join-Path $TestDrive "FakePath"
+    $fakeProject = Join-Path $TestDrive "FakeProject"
+    $fakeSrcDir  = Join-Path $fakeProject "src/ts"
+
     BeforeEach {
         # Globally mock logging inside the module to keep the test console output clean
         Mock Write-Log {} -ModuleName 'WebAssetBuilder'
-
-        # Set up cross-platform friendly fake paths using TestDrive
-        $fakePath    = Join-Path $TestDrive "FakePath"
-        $fakeProject = Join-Path $TestDrive "FakeProject"
-        $fakeSrcDir  = Join-Path $fakeProject "src/ts"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 1: Find-ProjectRoot Fails
-    # ----------------------------------------------------------------------
+    # Find-ProjectRoot Fails
     It 'Should throw an error if the project root cannot be determined' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "tsc" } -ModuleName 'WebAssetBuilder'
 
@@ -28,9 +26,7 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
             Should-Throw 'Project root could not be determined.'
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 2: Source Directory is Missing
-    # ----------------------------------------------------------------------
+    # Source Directory is Missing
     It 'Should throw an error if the source directory does not exist' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "tsc" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
@@ -42,9 +38,7 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
             Should-Throw "TypeScript source directory not found: $fakeSrcDir"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 3: No TypeScript Files Found
-    # ----------------------------------------------------------------------
+    # No TypeScript Files Found
     It 'Should throw an error if the source directory is empty' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "tsc" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
@@ -57,10 +51,8 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
             Should-Throw "No TypeScript files found in: $fakeSrcDir"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 4: The Happy Path
-    # ----------------------------------------------------------------------
-    It 'Should execute successfully and compile files without throwing' {
+    # The Happy Path
+    It 'Should execute successfully & compile files without throwing' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq "tsc" } -ModuleName 'WebAssetBuilder'
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
         Mock Test-Path { return $true } -ModuleName 'WebAssetBuilder'
@@ -69,7 +61,7 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
         $fakeFile = [PSCustomObject]@{ FullName = (Join-Path $fakeSrcDir "app.ts") }
         Mock Get-ChildItem { return @($fakeFile) } -ModuleName 'WebAssetBuilder'
 
-        # Intercept the 'tsc' call and simulate a successful exit code
+        # Intercept the 'tsc' call & simulate a successful exit code
         Mock tsc { $global:LASTEXITCODE = 0 } -ModuleName 'WebAssetBuilder'
 
         # The function should complete completely without throwing any exceptions

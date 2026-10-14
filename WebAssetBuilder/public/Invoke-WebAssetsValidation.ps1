@@ -3,9 +3,9 @@
     Validates the output of compiled web assets within the distribution directory.
 
 .DESCRIPTION
-    Locates the project root, verifies the existence of the 'dist' directory, and confirms
-    that HTML, CSS, and JavaScript files exist in the output folder. Logs asset counts
-    and prints the path of every assembled file.
+    Locates the project root, verifies the existence of the 'dist' directory, & confirms
+    that HTML, CSS, & JavaScript files exist in the output folder. Logs asset counts
+    & prints the path of every assembled file.
 
 .PARAMETER StartPath
     The starting directory path used to locate the project root.
@@ -43,7 +43,7 @@ function Invoke-WebAssetsValidation {
             throw "Final dist directory was not created: $distPath"
         }
 
-        # Scan distribution directory recursively for compiled HTML, CSS, and JS files.
+        # Scan distribution directory recursively for compiled HTML, CSS, & JS files.
         $htmlFiles = @(Get-ChildItem -Path $distPath -Recurse -File -Filter "*.html")
         $cssFiles  = @(Get-ChildItem -Path $distPath -Recurse -File -Filter "*.css")
         $jsFiles   = @(Get-ChildItem -Path $distPath -Recurse -File -Filter "*.js")
@@ -76,7 +76,7 @@ function Invoke-WebAssetsValidation {
             }
     }
     catch {
-        # Log validation failure details and re-throw exception.
+        # Log validation failure details & re-throw exception.
         Write-Log -Level ERROR -Message "❌ Web assets validation failed: $($_.Exception.Message)"
         throw
     }

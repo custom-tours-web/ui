@@ -1,11 +1,16 @@
-import { BookingFormControls } from './booking-form-controls'
-import type { BookingRequest } from './booking-request'
-import { createBookingRequest, isBookingDateRangeValid } from './booking-utils'
+import { BookingFormControls } from './booking-form-controls.js'
+import type { BookingRequest } from './booking-request.js'
+import { createBookingRequest, isBookingDateRangeValid } from './booking-utils.js'
 
+// Cache the main form & status container elements from the DOM
 const bookingForm = document.querySelector<HTMLFormElement>('.booking-form')
 const bookingStatus = document.querySelector<HTMLElement>('.booking-status')
 
-function getBookingFormControls(form: HTMLFormElement): BookingFormControls | null {
+/**
+ * Queries & validates all required form controls from the booking form.
+ * Returns null if any required element is missing to prevent runtime errors.
+ */
+const getBookingFormControls = (form: HTMLFormElement): BookingFormControls | null => {
   const fullName = form.querySelector<HTMLInputElement>('#full-name')
   const phoneNumber = form.querySelector<HTMLInputElement>('#phone-number')
   const currentLocation = form.querySelector<HTMLInputElement>('#location')
@@ -16,6 +21,7 @@ function getBookingFormControls(form: HTMLFormElement): BookingFormControls | nu
   const specialRequests = form.querySelector<HTMLTextAreaElement>('#special-requests')
   const submitButton = form.querySelector<HTMLButtonElement>('.submit-button')
 
+  // Fail fast if the DOM structure is incomplete
   if (
     !fullName ||
     !phoneNumber ||
@@ -26,9 +32,7 @@ function getBookingFormControls(form: HTMLFormElement): BookingFormControls | nu
     !numberOfMembers ||
     !specialRequests ||
     !submitButton
-  ) {
-    return null
-  }
+  ) return null
 
   return {
     fullName,
@@ -43,21 +47,30 @@ function getBookingFormControls(form: HTMLFormElement): BookingFormControls | nu
   }
 }
 
-function setBookingStatus(
+/**
+ * Updates the UI status message with success or error styling.
+ */
+const setBookingStatus = (
   status: HTMLElement,
   message: string,
   state: 'error' | 'success',
-): void {
+): void => {
   status.textContent = message
+  // Reset previous state classes before applying the new one
   status.classList.remove('is-error', 'is-success')
   status.classList.add(`is-${state}`)
 }
 
-function validateBookingDates(fromDate: HTMLInputElement, toDate: HTMLInputElement): boolean {
+/**
+ * Validates the chronological order of the booking dates using the HTML5 constraint validation API.
+ */
+const validateBookingDates = (fromDate: HTMLInputElement, toDate: HTMLInputElement): boolean => {
+  // Clear any existing custom validation errors before re-evaluating
   fromDate.setCustomValidity('')
   toDate.setCustomValidity('')
 
   if (!isBookingDateRangeValid(fromDate.value, toDate.value)) {
+    // Trigger the browser's native UI popover for invalid fields
     toDate.setCustomValidity('To Date cannot be before From Date.')
     toDate.reportValidity()
     return false
@@ -66,8 +79,11 @@ function validateBookingDates(fromDate: HTMLInputElement, toDate: HTMLInputEleme
   return true
 }
 
-async function sendBookingRequest(payload: BookingRequest): Promise<void> {
-  const response = await fetch('http://localhost:5166/api/v1/booking-requests', {
+/**
+ * Submits the structured booking payload to the local API endpoint.
+ */
+const sendBookingRequest = async (payload: BookingRequest): Promise<void> => {
+  const response : Response = await fetch('http://localhost:5166/api/v1/booking-requests', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -75,43 +91,48 @@ async function sendBookingRequest(payload: BookingRequest): Promise<void> {
     body: JSON.stringify(payload),
   })
 
-  if (!response.ok) {
-    throw new Error(`Booking request failed with status ${response.status}.`)
-  }
+  // Throw to trigger the catch block in the main submit handler if the server rejects the request
+  if (!response.ok) throw new Error(`Booking request failed with status ${response.status}.`)
 }
 
-function setSubmitting(
+/**
+ * Toggles the loading state of the submit button to prevent double-submissions.
+ */
+const setSubmitting = (
   submitButton: HTMLButtonElement,
   isSubmitting: boolean,
   label: string | null,
-): void {
+): void => {
   submitButton.disabled = isSubmitting
   submitButton.textContent = isSubmitting ? 'Sending...' : label
 }
 
-async function handleBookingSubmit(
+/**
+ * Orchestrates the form submission lifecycle: validation, payload creation, API interaction, & UI updates.
+ */
+const handleBookingSubmit = async (
   form: HTMLFormElement,
   status: HTMLElement,
   event: SubmitEvent,
-): Promise<void> {
+): Promise<void> => {
+  // Prevent standard HTML form POST behavior
   event.preventDefault()
 
-  const controls = getBookingFormControls(form)
+  const controls : BookingFormControls = getBookingFormControls(form)!
   if (!controls) {
     setBookingStatus(
       status,
-      'The booking form is incomplete. Please reload and try again.',
+      'The booking form is incomplete. Please reload & try again.',
       'error',
     )
     console.error('Booking submission could not start because a required form control is missing.')
     return
   }
 
-  if (!validateBookingDates(controls.fromDate, controls.toDate)) {
-    return
-  }
+  if (!validateBookingDates(controls.fromDate, controls.toDate)) return
 
-  const payload = createBookingRequest({
+  // Map the raw DOM input values into the strictly typed API payload format
+  const payload : BookingRequest = createBookingRequest({
     fullName: controls.fullName.value,
     phoneNumber: controls.phoneNumber.value,
     currentLocation: controls.currentLocation.value,
@@ -121,8 +142,12 @@ async function handleBookingSubmit(
     numberOfMembers: controls.numberOfMembers.value,
     specialRequests: controls.specialRequests.value,
   })
-  const buttonLabel = controls.submitButton.textContent
+
+  // Cache the original button text before overwriting it with the loading state
+  const buttonLabel : string = controls.submitButton.textContent
   setSubmitting(controls.submitButton, true, buttonLabel)
+
+  // Clear any previous status messages
   status.textContent = ''
   status.classList.remove('is-error', 'is-success')
 
@@ -133,47 +158,51 @@ async function handleBookingSubmit(
       'Your booking request was sent successfully. We’ll be in touch soon.',
       'success',
     )
-    form.reset()
+    form.reset() // Clear the form only on success
   } catch (error) {
     console.error('Booking request could not be submitted.', error)
     setBookingStatus(
       status,
-      'We couldn’t send your request. Please check your connection and try again.',
+      'We couldn’t send your request. Please check your connection & try again.',
       'error',
     )
   } finally {
+    // Restore button functionality regardless of success or failure
     setSubmitting(controls.submitButton, false, buttonLabel)
   }
 }
 
-function initializeBookingForm(): void {
-  if (!bookingForm || !bookingStatus) {
-    return
-  }
-
+/**
+ * Bootstraps the booking logic by attaching event listeners if the form exists.
+ */
+const initializeBookingForm = (): void => {
+  // Exit cleanly if the script is loaded on a page without the booking form
+  if (!bookingForm || !bookingStatus) return
   const destination = bookingForm.querySelector<HTMLSelectElement>('#destination')
   const destinationLinks = document.querySelectorAll<HTMLAnchorElement>(
     'a[data-booking-destination]',
   )
 
+  // Allow external links (like 'Book Ooty') to pre-fill the destination dropdown
   if (destination) {
     destinationLinks.forEach((link) => {
       link.addEventListener('click', () => {
-        const selectedDestination = link.dataset.bookingDestination
-        const matchingOption = Array.from(destination.options).find(
+        const selectedDestination : string = link.dataset.bookingDestination!
+        // Ensure the external link's target actually exists in the dropdown options
+        const matchingOption : HTMLOptionElement = Array.from(destination.options).find(
           (option) => option.value === selectedDestination,
-        )
+        )!
 
-        if (matchingOption) {
-          destination.value = matchingOption.value
-        }
+        if (matchingOption) destination.value = matchingOption.value
       })
     })
   }
 
+  // Bind the async submit handler, swallowing the unhandled promise return
   bookingForm.addEventListener('submit', (event: SubmitEvent) => {
     void handleBookingSubmit(bookingForm, bookingStatus, event)
   })
 }
 
+// Start the module
 initializeBookingForm()

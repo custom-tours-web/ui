@@ -18,9 +18,7 @@ Describe 'Invoke-TypeScriptBuild Integration Tests' {
         Get-ChildItem -Path $TestDrive -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 1: Invalid Project Root
-    # ----------------------------------------------------------------------
+    # Invalid Project Root
     It 'Should throw an error when the project root cannot be determined' {
         # Ensure tsc check passes so it reaches the Find-ProjectRoot logic
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'tsc' }
@@ -32,9 +30,7 @@ Describe 'Invoke-TypeScriptBuild Integration Tests' {
             Should-Throw 'Project root could not be determined.'
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 2: Missing Source Directory
-    # ----------------------------------------------------------------------
+    # Missing Source Directory
     It 'Should throw an error when the TypeScript source directory does not exist' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'tsc' }
 
@@ -43,9 +39,7 @@ Describe 'Invoke-TypeScriptBuild Integration Tests' {
             Should-Throw "TypeScript source directory not found:*"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 3: No TypeScript Files Found
-    # ----------------------------------------------------------------------
+    # No TypeScript Files Found
     It 'Should throw an error when the source directory is empty' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'tsc' }
 
@@ -57,9 +51,7 @@ Describe 'Invoke-TypeScriptBuild Integration Tests' {
             Should-Throw "No TypeScript files found in:*"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 4: The Happy Path
-    # ----------------------------------------------------------------------
+    # The Happy Path
     It 'Should compile TypeScript files to JavaScript successfully' -Skip:(-not (Get-Command 'tsc' -ErrorAction SilentlyContinue)) {
         # Create the source directory
         $tsSrcDir = Join-Path $script:tempRoot "src/ts"

@@ -30,7 +30,7 @@ CompanyName = 'Unknown'
 Copyright = '(c) SRNP. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Build automation for HAML, Stylus, and TypeScript'
+Description = 'Build automation for HAML, Stylus, & TypeScript'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -68,7 +68,7 @@ PowerShellVersion = '5.1'
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 # NestedModules = @()
 
-# Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
+# Functions to export from this module, for best performance, do not use wildcards & do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
     'Invoke-HamlBuild',
     'Invoke-StylusBuild',
@@ -76,13 +76,13 @@ FunctionsToExport = @(
     'Invoke-WebAssetsValidation'
 )
 
-# Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
+# Cmdlets to export from this module, for best performance, do not use wildcards & do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
 
 # Variables to export from this module
 VariablesToExport = @()
 
-# Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
+# Aliases to export from this module, for best performance, do not use wildcards & do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = @()
 
 # DSC resources to export from this module
@@ -115,7 +115,7 @@ PrivateData = @{
         ReleaseNotes = @"
         1.0.0 Release Notes:
         - Initial production release.
-        - Added Invoke-HamlBuild, Invoke-StylusBuild, and Invoke-TypeScriptBuild.
+        - Added Invoke-HamlBuild, Invoke-StylusBuild, & Invoke-TypeScriptBuild.
         - Added Invoke-WebAssetsValidation for distribution checks.
 "@
 

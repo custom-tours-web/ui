@@ -3,7 +3,7 @@
     Compiles TypeScript source files into JavaScript output files.
 
 .DESCRIPTION
-    Locates the project root and compiles all TypeScript (.ts) files
+    Locates the project root & compiles all TypeScript (.ts) files
     found in the specified source directory into JavaScript using the external 'tsc' CLI tool.
 
 .PARAMETER StartPath
@@ -54,7 +54,7 @@ function Invoke-TypeScriptBuild {
             throw "Project root could not be determined."
         }
 
-        # Resolve absolute paths for source and output directories.
+        # Resolve absolute paths for source & output directories.
         $srcDir = Join-Path $rootDir $SourceSubDir
         $outDir = Join-Path $rootDir $OutputSubDir
 
@@ -82,7 +82,7 @@ function Invoke-TypeScriptBuild {
         # Extract full path strings for each TypeScript file.
         $tsFilePaths = @($tsFiles.FullName)
 
-        # Execute TypeScript compiler (tsc) targeting output directory and source root.
+        # Execute TypeScript compiler (tsc) targeting output directory & source root.
         $tscOutput = & tsc `
             --outDir $outDir `
             --rootDir $srcDir `
@@ -98,7 +98,7 @@ function Invoke-TypeScriptBuild {
         Write-Log -Level SUCCESS -Message "✅ TypeScript build completed successfully."
     }
     catch {
-        # Log error details and re-throw exception.
+        # Log error details & re-throw exception.
         Write-Log -Level ERROR -Message "❌ TypeScript build failed: $($_.Exception.Message)"
         throw
     }

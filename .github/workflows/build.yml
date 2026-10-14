@@ -1,72 +1,65 @@
-# ==============================================================================
 # WebAssetBuilder Continuous Integration (CI) Workflow
 #
-# Compiles HAML, Stylus, and TypeScript assets concurrently across isolated jobs
-# using the 'WebAssetBuilder' PowerShell module, then merges and validates
+# Compiles HAML, Stylus, & TypeScript assets concurrently across isolated jobs
+# using the 'WebAssetBuilder' PowerShell module, then merges & validates
 # the final distribution bundle.
-# ==============================================================================
 
-name: CI
+name: CI # The name of the GitHub Actions workflow
 
 on:
   push:
-    branches: [ main, air ]
+    branches: [ main, air ] # Trigger the workflow on pushes to the main & air branches
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main ] # Trigger the workflow on pull requests targeting the main branch
+  workflow_dispatch: # Allow the workflow to be triggered manually from the GitHub UI
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }} # Group concurrent runs by workflow & branch/ref
+  cancel-in-progress: true # Cancel any currently running jobs in the same group to save CI minutes
 
 permissions:
-  contents: read
-  pull-requests: write
-  checks: write
+  contents: read # Allow reading repository contents
+  pull-requests: write # Allow writing to pull requests (e.g., for test reporting comments)
+  checks: write # Allow creating & updating GitHub Check Runs
 
 jobs:
-  # ----------------------------------------------------------------------------
-  # JOB 1: Consolidated Build, Test, and Package
-  # ----------------------------------------------------------------------------
+  # Consolidated Build, Test, & Package
   build-and-test:
     name: 🚀 Build, Test, & Package Web Assets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Execute the job on an Ubuntu runner
 
     steps:
-      # ==========================================
-      # 1. ENVIRONMENT & TOOLING SETUP
-      # ==========================================
+      # ENVIRONMENT & TOOLING SETUP
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7 # Check out the repository source code
 
       - name: 📦 Install Pester
         shell: pwsh
-        run: Install-Module Pester -Force -SkipPublisherCheck -Scope CurrentUser
+        run: Install-Module Pester -Force -SkipPublisherCheck -Scope CurrentUser # Install the Pester testing framework for PowerShell
 
       - name: 💎 Setup Ruby (Latest)
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 'ruby'
+          ruby-version: 'ruby' # Set up the latest version of Ruby, required for HAML
 
       - name: 🟢 Setup Node.js (Latest)
         uses: actions/setup-node@v7
         with:
-          node-version: '*'
+          node-version: '*' # Set up the latest version of Node.js
 
       - name: 📦 Install Global CLI Tools
         run: |
           gem install haml
-          npm install -g stylus typescript
+          npm install -g stylus typescript # Install compilation tools globally
 
       - name: 📦 Install App Dependencies
-        run: npm install
+        run: npm install # Install project-specific NPM packages
 
       - name: 🎭 Install Playwright Browsers
-        run: npx playwright install chromium --with-deps
+        run: npx playwright install chromium --with-deps # Install Playwright dependencies for E2E testing
 
-      # ==========================================
-      # 2. TEST & MUTATION EXECUTION
-      # ==========================================
+      # TEST & MUTATION EXECUTION
+      # The following steps run various test suites & continue even if they fail (continue-on-error: true) so coverage & reports are still generated
       - name: 🧪 Execute Pester Unit Tests
         shell: pwsh
         working-directory: ./WebAssetBuilder/
@@ -103,12 +96,10 @@ jobs:
         run: npm run test:mutation
         continue-on-error: true
 
-      # ==========================================
-      # 3. TEST REPORTING
-      # ==========================================
+      # TEST REPORTING
       - name: 📋 Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+        if: always() # Ensure reports are published even if preceding test steps failed
         with:
           check_name: "🧪 Unit Test Results"
           files: coverage/coverage-report.xml
@@ -167,6 +158,7 @@ jobs:
           "" | Out-File -Append $summaryFile
           "---" | Out-File -Append $summaryFile
 
+      # Integration Test Reporting
       - name: 📋 Publish Integration Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
@@ -234,6 +226,7 @@ jobs:
           "" | Out-File -Append $summaryFile
           "---" | Out-File -Append $summaryFile
 
+      # Component Test Reporting
       - name: 📋 Publish Component Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
@@ -261,6 +254,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
 
+      # Contract Test Reporting
       - name: 📋 Publish Contract Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
@@ -288,6 +282,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
 
+      # E2E Test Reporting
       - name: 📋 Publish E2E Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
@@ -315,6 +310,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
 
+      # Mutation Test Reporting
       - name: 📝 Write Mutation Report to Summary
         if: always()
         run: |
@@ -373,32 +369,28 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
 
-      # ==========================================
-      # 4. ASSET COMPILATION & PACKAGING
-      # ==========================================
+      # ASSET COMPILATION & PACKAGING
       - name: 🚀 Build HAML, Stylus & TypeScript
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
           Import-Module ./WebAssetBuilder/WebAssetBuilder.psd1 -Force
-          Invoke-HamlBuild -StartPath .
-          Invoke-StylusBuild -StartPath .
-          Invoke-TypeScriptBuild -StartPath .
+          Invoke-HamlBuild -StartPath . # Compile HAML templates to HTML
+          Invoke-StylusBuild -StartPath . # Compile Stylus stylesheets to CSS
+          Invoke-TypeScriptBuild -StartPath . # Compile TypeScript to JavaScript
 
       - name: 🔍 Validate Final Distribution
         shell: pwsh
         run: |
           Import-Module ./WebAssetBuilder/WebAssetBuilder.psd1 -Force
-          Invoke-WebAssetsValidation -StartPath .
+          Invoke-WebAssetsValidation -StartPath . # Verify the generated distribution bundle
 
-      # ==========================================
-      # 5. ARTIFACT ARCHIVING
-      # ==========================================
+      # ARTIFACT ARCHIVING
       - name: 📤 Upload Test & Coverage Results
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: all-test-results
+          name: all-test-results # Save test reports & coverage data
           path: |
             **/TestResults/**/*.xml
             **/TestResults/**/*.trx
@@ -410,7 +402,7 @@ jobs:
       - name: 📤 Upload Final Bundle
         uses: actions/upload-artifact@v7
         with:
-          name: assets
+          name: assets # Upload the successfully built artifacts from the dist folder
           path: dist/
           retention-days: 1
           if-no-files-found: error

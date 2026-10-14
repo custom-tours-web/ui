@@ -4,13 +4,13 @@ BeforeAll {
 
 Describe 'Invoke-WebAssetsValidation Unit Tests' {
 
+    # Define our fake project paths inside Pester's automatic TestDrive
+    $fakeProject = Join-Path $TestDrive "FakeProject"
+    $fakeDist = Join-Path $fakeProject "dist"
+
     BeforeEach {
         # Mock Write-Log globally within the module to keep the test console clean
         Mock Write-Log {} -ModuleName 'WebAssetBuilder'
-
-        # Define our fake project paths inside Pester's automatic TestDrive
-        $fakeProject = Join-Path $TestDrive "FakeProject"
-        $fakeDist = Join-Path $fakeProject "dist"
     }
 
     AfterEach {
@@ -18,9 +18,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
         Get-ChildItem -Path $TestDrive -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 1: Find-ProjectRoot Fails
-    # ----------------------------------------------------------------------
+    # Find-ProjectRoot Fails
     It 'Should throw an error if the project root cannot be determined' {
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
@@ -28,9 +26,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
             Should-Throw 'Project root could not be determined.'
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 2: Dist Directory is Missing
-    # ----------------------------------------------------------------------
+    # Dist Directory is Missing
     It 'Should throw an error if the dist directory does not exist' {
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
 
@@ -39,9 +35,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
             Should-Throw "Final dist directory was not created: $fakeDist"
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 3: Missing Specific File Types
-    # ----------------------------------------------------------------------
+    # Missing Specific File Types
     Context 'When the dist directory exists but lacks specific files' {
 
         BeforeEach {
@@ -52,7 +46,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
         }
 
         It 'Should throw an error if no HTML files are found' {
-            # Create CSS and JS, but skip HTML
+            # Create CSS & JS, but skip HTML
             New-Item -ItemType File -Path (Join-Path $fakeDist "style.css") -Force | Out-Null
             New-Item -ItemType File -Path (Join-Path $fakeDist "app.js") -Force | Out-Null
 
@@ -61,7 +55,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
         }
 
         It 'Should throw an error if no CSS files are found' {
-            # Create HTML and JS, but skip CSS
+            # Create HTML & JS, but skip CSS
             New-Item -ItemType File -Path (Join-Path $fakeDist "index.html") -Force | Out-Null
             New-Item -ItemType File -Path (Join-Path $fakeDist "app.js") -Force | Out-Null
 
@@ -70,7 +64,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
         }
 
         It 'Should throw an error if no JS files are found' {
-            # Create HTML and CSS, but skip JS
+            # Create HTML & CSS, but skip JS
             New-Item -ItemType File -Path (Join-Path $fakeDist "index.html") -Force | Out-Null
             New-Item -ItemType File -Path (Join-Path $fakeDist "style.css") -Force | Out-Null
 
@@ -79,13 +73,11 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
         }
     }
 
-    # ----------------------------------------------------------------------
-    # SCENARIO 4: The Happy Path
-    # ----------------------------------------------------------------------
+    # The Happy Path
     It 'Should execute successfully without throwing when all files are present' {
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
 
-        # Physically create the dist directory and ALL required files
+        # Physically create the dist directory & ALL required files
         New-Item -ItemType Directory -Path $fakeDist -Force | Out-Null
         New-Item -ItemType File -Path (Join-Path $fakeDist "index.html") -Force | Out-Null
         New-Item -ItemType File -Path (Join-Path $fakeDist "style.css") -Force | Out-Null
