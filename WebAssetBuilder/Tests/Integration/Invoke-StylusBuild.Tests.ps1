@@ -25,8 +25,7 @@ Describe 'Invoke-StylusBuild Integration Tests' {
         # Forces the project root lookup to fail.
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-StylusBuild -StartPath $script:tempRoot } |
-            Should-Throw 'Project root could not be determined.'
+        { Invoke-StylusBuild -StartPath $script:tempRoot } | Should-Throw 'Project root could not be determined.'
     }
 
     # Missing Source Directory
@@ -34,8 +33,7 @@ Describe 'Invoke-StylusBuild Integration Tests' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'stylus' }
 
         # The target source directory 'src/styl' is deliberately not created.
-        { Invoke-StylusBuild -StartPath $script:tempRoot } |
-            Should-Throw "Stylus source directory not found:*"
+        { Invoke-StylusBuild -StartPath $script:tempRoot } | Should-Throw "Stylus source directory not found:*"
     }
 
     # No Stylus Files Found
@@ -46,8 +44,7 @@ Describe 'Invoke-StylusBuild Integration Tests' {
         New-Item -ItemType Directory -Path $stylSrcDir -Force | Out-Null
 
         # Verifies the script throws when no .styl files are present to compile.
-        { Invoke-StylusBuild -StartPath $script:tempRoot } |
-            Should-Throw "No Stylus files found in:*"
+        { Invoke-StylusBuild -StartPath $script:tempRoot } | Should-Throw "No Stylus files found in:*"
     }
 
     # The Happy Path

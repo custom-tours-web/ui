@@ -43,9 +43,7 @@ function Invoke-TypeScriptBuild {
 
         # Verify that the TypeScript executable CLI (tsc) is available in the current environment PATH.
         if (-not (Get-Command "tsc" -ErrorAction SilentlyContinue)) {
-            throw [System.ComponentModel.Win32Exception]::new(
-                "TypeScript CLI (tsc) not found. Install via 'npm install -g typescript'."
-            )
+            throw [System.ComponentModel.Win32Exception]::new("TypeScript CLI (tsc) not found. Install via 'npm install -g typescript'.")
         }
 
         # Locate the root directory of the project.

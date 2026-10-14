@@ -43,9 +43,7 @@ function Invoke-StylusBuild {
 
         # Verify that the Stylus executable CLI is available in the current environment PATH.
         if (-not (Get-Command "stylus" -ErrorAction SilentlyContinue)) {
-            throw [System.ComponentModel.Win32Exception]::new(
-                "Stylus CLI not found. Install via 'npm install -g stylus'."
-            )
+            throw [System.ComponentModel.Win32Exception]::new("Stylus CLI not found. Install via 'npm install -g stylus'.")
         }
 
         # Locate the root directory of the project.

@@ -5,14 +5,14 @@ BeforeAll {
 
 Describe 'Invoke-TypeScriptBuild Unit Tests' {
 
-    # Set up cross-platform friendly fake paths using TestDrive
-    $fakePath    = Join-Path $TestDrive "FakePath"
-    $fakeProject = Join-Path $TestDrive "FakeProject"
-    $fakeSrcDir  = Join-Path $fakeProject "src/ts"
-
     BeforeEach {
         # Globally mock logging inside the module to keep the test console output clean
         Mock Write-Log {} -ModuleName 'WebAssetBuilder'
+
+        # Set up cross-platform friendly fake paths using TestDrive
+        $fakePath    = Join-Path $TestDrive "FakePath"
+        $fakeProject = Join-Path $TestDrive "FakeProject"
+        $fakeSrcDir  = Join-Path $fakeProject "src/ts"
     }
 
     # Find-ProjectRoot Fails
@@ -22,8 +22,7 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
         # Simulate the helper function failing to locate a root
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-TypeScriptBuild -StartPath $fakePath } |
-            Should-Throw 'Project root could not be determined.'
+        { Invoke-TypeScriptBuild -StartPath $fakePath } | Should-Throw 'Project root could not be determined.'
     }
 
     # Source Directory is Missing
@@ -34,8 +33,7 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
         # Simulate the source directory missing from the file system
         Mock Test-Path { return $false } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-TypeScriptBuild -StartPath $fakePath } |
-            Should-Throw "TypeScript source directory not found: $fakeSrcDir"
+        { Invoke-TypeScriptBuild -StartPath $fakePath } | Should-Throw "TypeScript source directory not found: $fakeSrcDir"
     }
 
     # No TypeScript Files Found
@@ -47,8 +45,7 @@ Describe 'Invoke-TypeScriptBuild Unit Tests' {
         # Simulate finding zero .ts files in the directory
         Mock Get-ChildItem { return @() } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-TypeScriptBuild -StartPath $fakePath } |
-            Should-Throw "No TypeScript files found in: $fakeSrcDir"
+        { Invoke-TypeScriptBuild -StartPath $fakePath } | Should-Throw "No TypeScript files found in: $fakeSrcDir"
     }
 
     # The Happy Path

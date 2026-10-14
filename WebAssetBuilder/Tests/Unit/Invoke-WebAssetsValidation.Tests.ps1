@@ -4,13 +4,13 @@ BeforeAll {
 
 Describe 'Invoke-WebAssetsValidation Unit Tests' {
 
-    # Define our fake project paths inside Pester's automatic TestDrive
-    $fakeProject = Join-Path $TestDrive "FakeProject"
-    $fakeDist = Join-Path $fakeProject "dist"
-
     BeforeEach {
         # Mock Write-Log globally within the module to keep the test console clean
         Mock Write-Log {} -ModuleName 'WebAssetBuilder'
+
+        # Define our fake project paths inside Pester's automatic TestDrive
+        $fakeProject = Join-Path $TestDrive "FakeProject"
+        $fakeDist = Join-Path $fakeProject "dist"
     }
 
     AfterEach {
@@ -22,8 +22,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
     It 'Should throw an error if the project root cannot be determined' {
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-WebAssetsValidation -StartPath $TestDrive } |
-            Should-Throw 'Project root could not be determined.'
+        { Invoke-WebAssetsValidation -StartPath $TestDrive } | Should-Throw 'Project root could not be determined.'
     }
 
     # Dist Directory is Missing
@@ -31,8 +30,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
         Mock Find-ProjectRoot { return $fakeProject } -ModuleName 'WebAssetBuilder'
 
         # We DO NOT create the 'dist' directory here, so Test-Path naturally fails
-        { Invoke-WebAssetsValidation -StartPath $TestDrive } |
-            Should-Throw "Final dist directory was not created: $fakeDist"
+        { Invoke-WebAssetsValidation -StartPath $TestDrive } | Should-Throw "Final dist directory was not created: $fakeDist"
     }
 
     # Missing Specific File Types
@@ -50,8 +48,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
             New-Item -ItemType File -Path (Join-Path $fakeDist "style.css") -Force | Out-Null
             New-Item -ItemType File -Path (Join-Path $fakeDist "app.js") -Force | Out-Null
 
-            { Invoke-WebAssetsValidation -StartPath $TestDrive } |
-                Should-Throw 'No HTML files found in final dist.'
+            { Invoke-WebAssetsValidation -StartPath $TestDrive } | Should-Throw 'No HTML files found in final dist.'
         }
 
         It 'Should throw an error if no CSS files are found' {
@@ -59,8 +56,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
             New-Item -ItemType File -Path (Join-Path $fakeDist "index.html") -Force | Out-Null
             New-Item -ItemType File -Path (Join-Path $fakeDist "app.js") -Force | Out-Null
 
-            { Invoke-WebAssetsValidation -StartPath $TestDrive } |
-                Should-Throw 'No CSS files found in final dist.'
+            { Invoke-WebAssetsValidation -StartPath $TestDrive } | Should-Throw 'No CSS files found in final dist.'
         }
 
         It 'Should throw an error if no JS files are found' {
@@ -68,8 +64,7 @@ Describe 'Invoke-WebAssetsValidation Unit Tests' {
             New-Item -ItemType File -Path (Join-Path $fakeDist "index.html") -Force | Out-Null
             New-Item -ItemType File -Path (Join-Path $fakeDist "style.css") -Force | Out-Null
 
-            { Invoke-WebAssetsValidation -StartPath $TestDrive } |
-                Should-Throw 'No JavaScript files found in final dist.'
+            { Invoke-WebAssetsValidation -StartPath $TestDrive } | Should-Throw 'No JavaScript files found in final dist.'
         }
     }
 

@@ -25,8 +25,7 @@ Describe 'Invoke-HamlBuild Integration Tests' {
         # Forces the project root lookup to fail.
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-HamlBuild -StartPath $script:tempRoot } |
-            Should-Throw 'Project root could not be determined.'
+        { Invoke-HamlBuild -StartPath $script:tempRoot } | Should-Throw 'Project root could not be determined.'
     }
 
     # Missing Source Directory
@@ -34,8 +33,7 @@ Describe 'Invoke-HamlBuild Integration Tests' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'haml' }
 
         # The target source directory 'src/haml' is deliberately not created.
-        { Invoke-HamlBuild -StartPath $script:tempRoot } |
-            Should-Throw "HAML source directory not found:*"
+        { Invoke-HamlBuild -StartPath $script:tempRoot } | Should-Throw "HAML source directory not found:*"
     }
 
     # No HAML Files Found
@@ -46,8 +44,7 @@ Describe 'Invoke-HamlBuild Integration Tests' {
         New-Item -ItemType Directory -Path $hamlSrcDir -Force | Out-Null
 
         # Verifies the script throws when no .haml files are present to compile.
-        { Invoke-HamlBuild -StartPath $script:tempRoot } |
-            Should-Throw "No HAML files found in:*"
+        { Invoke-HamlBuild -StartPath $script:tempRoot } | Should-Throw "No HAML files found in:*"
     }
 
     # The Happy Path

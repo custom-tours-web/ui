@@ -26,8 +26,7 @@ Describe 'Invoke-TypeScriptBuild Integration Tests' {
         # Force Find-ProjectRoot to fail
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-TypeScriptBuild -StartPath $script:tempRoot } |
-            Should-Throw 'Project root could not be determined.'
+        { Invoke-TypeScriptBuild -StartPath $script:tempRoot } | Should-Throw 'Project root could not be determined.'
     }
 
     # Missing Source Directory
@@ -35,8 +34,7 @@ Describe 'Invoke-TypeScriptBuild Integration Tests' {
         Mock Get-Command { return $true } -ParameterFilter { $Name -eq 'tsc' }
 
         # The default source directory 'src/ts' is intentionally NOT created here
-        { Invoke-TypeScriptBuild -StartPath $script:tempRoot } |
-            Should-Throw "TypeScript source directory not found:*"
+        { Invoke-TypeScriptBuild -StartPath $script:tempRoot } | Should-Throw "TypeScript source directory not found:*"
     }
 
     # No TypeScript Files Found
@@ -47,8 +45,7 @@ Describe 'Invoke-TypeScriptBuild Integration Tests' {
         $tsSrcDir = Join-Path $script:tempRoot "src/ts"
         New-Item -ItemType Directory -Path $tsSrcDir -Force | Out-Null
 
-        { Invoke-TypeScriptBuild -StartPath $script:tempRoot } |
-            Should-Throw "No TypeScript files found in:*"
+        { Invoke-TypeScriptBuild -StartPath $script:tempRoot } | Should-Throw "No TypeScript files found in:*"
     }
 
     # The Happy Path

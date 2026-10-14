@@ -5,14 +5,14 @@ BeforeAll {
 
 Describe 'Invoke-HamlBuild Unit Tests' {
 
-    # Set up cross-platform friendly fake paths using TestDrive
-    $fakePath    = Join-Path $TestDrive "FakePath"
-    $fakeProject = Join-Path $TestDrive "FakeProject"
-    $fakeSrcDir  = Join-Path $fakeProject "src/haml"
-
     BeforeEach {
         # Globally mock logging inside the module to keep the test console output clean
         Mock Write-Log {} -ModuleName 'WebAssetBuilder'
+
+        # Set up cross-platform friendly fake paths using TestDrive
+        $fakePath    = Join-Path $TestDrive "FakePath"
+        $fakeProject = Join-Path $TestDrive "FakeProject"
+        $fakeSrcDir  = Join-Path $fakeProject "src/haml"
     }
 
     # Find-ProjectRoot Fails
@@ -21,8 +21,7 @@ Describe 'Invoke-HamlBuild Unit Tests' {
 
         Mock Find-ProjectRoot { return $null } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-HamlBuild -StartPath $fakePath } |
-            Should-Throw 'Project root could not be determined.'
+        { Invoke-HamlBuild -StartPath $fakePath } | Should-Throw 'Project root could not be determined.'
     }
 
     # Source Directory is Missing
@@ -32,8 +31,7 @@ Describe 'Invoke-HamlBuild Unit Tests' {
 
         Mock Test-Path { return $false } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-HamlBuild -StartPath $fakePath } |
-            Should-Throw "HAML source directory not found: $fakeSrcDir"
+        { Invoke-HamlBuild -StartPath $fakePath } | Should-Throw "HAML source directory not found: $fakeSrcDir"
     }
 
     # No HAML Files Found
@@ -45,8 +43,7 @@ Describe 'Invoke-HamlBuild Unit Tests' {
         # Simulate finding zero .haml files in the directory
         Mock Get-ChildItem { return @() } -ModuleName 'WebAssetBuilder'
 
-        { Invoke-HamlBuild -StartPath $fakePath } |
-            Should-Throw "No HAML files found in: $fakeSrcDir"
+        { Invoke-HamlBuild -StartPath $fakePath } | Should-Throw "No HAML files found in: $fakeSrcDir"
     }
 
     # The Happy Path
